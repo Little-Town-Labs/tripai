@@ -315,7 +315,6 @@ F1 (Bootstrap)
 - [ ] Neon Postgres project created
 - [ ] Neon Auth configured
 - [ ] Object storage provider selected for photos
-- [ ] Stripe account created
 - [ ] Google Places + Directions API keys obtained
 - [ ] Anthropic API key obtained
 - [ ] Vercel project linked
@@ -334,6 +333,7 @@ F1 (Bootstrap)
 - [ ] Phase 1 gate: a user can submit intake and see a grounded, streaming, revisable plan
 
 ### Phase 2 — Sell & Own a Trip
+- [ ] Stripe account created
 - [ ] **F8: Stripe checkout & fulfillment** — `/speckit-specify 8-stripe-checkout`
 - [ ] **F9: Trip detail view (co-pilot UX)** — `/speckit-specify 9-trip-detail`
 - [ ] **F10: Scrapbook (notes, ratings, photos)** — `/speckit-specify 10-scrapbook`
