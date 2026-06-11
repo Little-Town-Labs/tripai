@@ -6,7 +6,28 @@ An AI-powered travel planning app for families taking road trips in Florida. Fam
 
 Families **buy the trip once and own it forever**. During and after the trip, the app becomes a living scrapbook: notes, star ratings on every stop, and a personal photo album.
 
-**Tagline concept:** _"Your AI travel agent — plan it, live it, keep it."_
+**Tagline:** _"Plan it. Live it. Keep it."_
+
+---
+
+## Users & Market
+
+**Primary user:** Busy parents with young kids, planning a road trip they don't have time to research. Not tech-savvy — they want the app to feel like talking to a smart friend, not configuring software.
+
+**Secondary users:** Multigenerational travel parties — grandparents, aunts, uncles, older kids — who join the trip via a link the parents send them. They never make an account. They see the itinerary, tap to navigate, upload photos, and leave ratings.
+
+**Who we're competing with:** Nothing, functionally. Our users are currently switching from "winging it," a Google Doc, a pile of browser tabs, or a half-started spreadsheet. TripAI is the first real tool they'll use for this job.
+
+**The job to be done:** _"Plan a road trip my family will actually enjoy, without spending my limited free time becoming a travel agent — and keep the memories afterward."_
+
+**Success metrics for MVP:**
+- **Conversion:** % of families who complete the intake form and then purchase (target: 25%+)
+- **Revision usage:** avg revisions used pre-purchase (signal: is the plan close enough on first pass?)
+- **Share adoption:** % of purchased trips that generate at least one share link (target: 60%+)
+- **Scrapbook activity:** % of purchased trips with at least one photo or note uploaded during or after travel (target: 50%+)
+- **Referral intent:** families who report they'd recommend it (NPS-style, post-trip)
+
+**Positioning:** Not a navigation app. Not a booking engine. Not a travel guide. TripAI is the **itinerary brain + family scrapbook** for the one week a year a family hits the road together.
 
 ---
 
