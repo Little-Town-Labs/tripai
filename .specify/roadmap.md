@@ -57,6 +57,7 @@ Both are constitutional commitments and therefore non-negotiable for launch. The
 **Constitution:** Articles II, VIII, IX
 
 #### F3: Owner authentication
+**Status:** Done — implemented with Neon Auth owner signup/signin, protected owner app route, owner reconciliation, and live disposable signup/sign-out smoke on 2026-06-11.
 **Source:** Arch doc §Tech Stack (Neon Auth), §App Routes (`(auth)/`)
 **Description:** Email/password + Google OAuth via Neon Auth with Better Auth. Login, signup, session handling, auth route handler, route protection middleware. **Only the trip owner authenticates — family members never do.**
 **Complexity:** Small
@@ -323,8 +324,8 @@ F1 (Bootstrap)
 ### Phase 0 — Foundation
 - [x] **F1: Platform bootstrap** — `specs/001-platform-bootstrap`
 - [x] **F2: Data model & RLS policies** — `specs/002-data-model-rls`
-- [ ] **F3: Owner authentication** — `/speckit-specify 3-owner-auth`
-- [ ] Phase 0 gate: authenticated user can sign up / log in; empty DB with RLS verified
+- [x] **F3: Owner authentication** — `specs/003-owner-authentication`
+- [x] Phase 0 gate: authenticated user can sign up / log in; empty DB with RLS verified
 
 ### Phase 1 — Generate a Trip
 - [ ] **F4: Intake form** — `/speckit-specify 4-intake-form`
@@ -359,10 +360,10 @@ F1 (Bootstrap)
 **Immediate next command:**
 
 ```
-/speckit-specify 1-platform-bootstrap
+/speckit-specify 4-intake-form
 ```
 
-This will produce `.specify/specs/1-platform-bootstrap/spec.md` and its requirements checklist, then walk through clarify → plan → tasks → analyze → implement → review for F1.
+This will produce the F4 intake-form spec and its requirements checklist, then walk through clarify → plan → tasks → analyze → implement → review for F4.
 
 **Before specifying F6:** if Anthropic, Google Places, or Stripe accounts aren't provisioned yet, do that first — the spec phase for F6 will want concrete key availability.
 

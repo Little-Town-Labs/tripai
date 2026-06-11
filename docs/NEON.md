@@ -42,12 +42,28 @@ NEON_AUTH_COOKIE_SECRET=
 
 `NEON_API_KEY` is used by `neonctl` and local MCP server authentication. Keep it out of committed files.
 `DATABASE_TEST_URL` is used for F2 database and RLS tests and must point at a Neon testing branch, not the default branch.
+`NEON_AUTH_BASE_URL` and `NEON_AUTH_COOKIE_SECRET` are used by F3 owner authentication through Neon Auth with Better Auth.
 
 For Next.js, `NEON_AUTH_COOKIE_SECRET` should be a secret value at least 32 characters long. Generate one locally with:
 
 ```bash
 openssl rand -base64 32
 ```
+
+## Owner Auth
+
+F3 uses Neon Auth's Next.js server SDK and custom TripAI auth pages.
+
+Expected local files:
+
+```text
+src/lib/auth/server.ts
+src/lib/auth/client.ts
+src/app/api/auth/[...path]/route.ts
+proxy.ts
+```
+
+Google OAuth is available for development through Neon Auth shared credentials. Before production launch, configure custom Google OAuth credentials and trusted application domains in the Neon Console Auth settings.
 
 ## MCP Setup
 
@@ -130,6 +146,12 @@ npx neonctl@latest connection-string test-data-model-rls --project-id sparkling-
 ```
 
 Store that value as `DATABASE_TEST_URL` in `.env.local`. Do not commit it.
+
+If the development database branch has not had migrations applied yet, load `DATABASE_URL` through Next's env loader before running Drizzle. Raw Neon URLs may contain shell-special characters and may not be safely sourceable directly from `.env.local`.
+
+```bash
+DATABASE_URL="$(node -e 'require("@next/env").loadEnvConfig(process.cwd()); process.stdout.write(process.env.DATABASE_URL || "")')" npm run db:migrate
+```
 
 Claude Code:
 
