@@ -48,6 +48,7 @@ Both are constitutional commitments and therefore non-negotiable for launch. The
 **Constitution:** Article VII (tech stack)
 
 #### F2: Data model & RLS policies
+**Status:** Done — implemented with Drizzle schema, Neon testing branch validation, and owner/share-link RLS tests on 2026-06-11.
 **Source:** Arch doc §Data Model
 **Description:** Full Drizzle schema — `User`, `TripIntake`, `Trip`, `TripDay`, `Stop`, `Note`, `Rating`, `Photo`, plus **new tables required by the constitution**: `ShareLink` (tokens, revocation, per-link moderation metadata) and `TripRevision` (versioning for Article V rollback and Article IX revision-safe scrapbook). RLS policies MUST cover both owner-auth and share-token-auth paths. Every policy gets a dedicated test (Article II, Article IV of constitution).
 **Complexity:** Medium
@@ -321,7 +322,7 @@ F1 (Bootstrap)
 
 ### Phase 0 — Foundation
 - [x] **F1: Platform bootstrap** — `specs/001-platform-bootstrap`
-- [ ] **F2: Data model & RLS policies** — `/speckit-specify 2-data-model`
+- [x] **F2: Data model & RLS policies** — `specs/002-data-model-rls`
 - [ ] **F3: Owner authentication** — `/speckit-specify 3-owner-auth`
 - [ ] Phase 0 gate: authenticated user can sign up / log in; empty DB with RLS verified
 

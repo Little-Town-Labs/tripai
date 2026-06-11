@@ -70,6 +70,8 @@ Neon setup, CLI, MCP, and agent connection instructions live in [`docs/NEON.md`]
 
 ## Data Model
 
+**F2 implementation note:** The production schema adds two constitution-driven tables not shown in the original diagram: `ShareLink` for credential-free family access and revocation, and `TripRevision` for current/prior itinerary versions. The implemented `Photo` surface is currently `photo_metadata`; binary object storage remains deferred until F10 photo upload work. Stop rows include a stable stop key so notes, ratings, and photo metadata can survive revisions when stops remain.
+
 ```
 ┌──────────────┐       ┌──────────────────┐
 │    User       │       │   TripIntake      │

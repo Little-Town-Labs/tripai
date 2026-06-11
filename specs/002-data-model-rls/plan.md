@@ -1,0 +1,104 @@
+# Implementation Plan: Data Model & Access Policies
+
+**Branch**: `002-data-model-rls` | **Date**: 2026-06-11 | **Spec**: [spec.md](spec.md)
+
+**Input**: Feature specification from `specs/002-data-model-rls/spec.md`
+
+**Note**: This template is filled in by the `/speckit-plan` command. See `.specify/templates/plan-template.md` for the execution workflow.
+
+## Summary
+
+Build the production data foundation for TripAI: Drizzle-managed Postgres schema, migrations, and access policies for owner-only trips, credential-free family share links, and revision-safe scrapbook contributions. Implementation will be test-first: create schema and RLS tests against a Neon testing branch before accepting migrations or policy changes.
+
+## Technical Context
+
+**Language/Version**: TypeScript 5, Node.js runtime used by Next.js 16.2.3
+
+**Primary Dependencies**: Next.js 16.2.3, React 19.2.4, Drizzle ORM, Drizzle Kit, node-postgres (`pg`), TypeScript
+
+**Storage**: Neon Postgres project `tripai`; use a dedicated Neon testing branch for migration/RLS validation
+
+**Testing**: Node test runner for database/RLS integration tests, Playwright for existing MVP smoke, TypeScript compile checks, ESLint
+
+**Target Platform**: Next.js web app deployed on Vercel, with server-side database access
+
+**Project Type**: Web application with server-side database schema and access policy layer
+
+**Performance Goals**: Owner/share access checks should be index-supported for trip, day, stop, and contribution reads; seed-scale RLS tests should complete in under 30 seconds on the Neon testing branch
+
+**Constraints**: No secrets committed; photo binary storage deferred to F10; Stripe behavior deferred to F8; owner login UI deferred to F3; every policy needs allow and deny tests
+
+**Scale/Scope**: MVP family-trip workload: one active owner trip at a time, credential-free family contributors per trip, roadmap entities through F12 represented in schema
+
+## Constitution Check
+
+*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
+
+| Article | Requirement Impact | Gate Result |
+|---|---|---|
+| I: You Own Your Trip Forever | Ownership and deletion must be representable across all trip/contribution rows. | Pass: cascade and ownership relationships planned. |
+| II: Your Family Joins Free | Share links must allow view + contribution without accounts and every reachable row needs token-scoped policy tests. | Pass: share-link policies and tests are core scope. |
+| III: Every Recommendation Is Web-Verified | Stops need verified venue anchors for real-world places. | Pass: stop constraints include verified place identity. |
+| IV: We Suggest, We Never Dictate | Data model must allow later reorder/replace/dismiss behavior. | Pass: ordered stops and revision records planned. |
+| V: You Can Change Your Mind | Revision records must preserve prior/current versions and retained-stop contributions. | Pass: TripRevision and version-aware contribution relationships planned. |
+| VI: Built for the Moment | Active trip queries must support single-trip surfaces. | Pass: trip/day/stop indexes planned for active trip reads. |
+| VII: We Complement, We Don't Replace | Stops need external handoff data but no turn-by-turn navigation. | Pass: route/venue facts stored, navigation app behavior out of scope. |
+| VIII: Your Trip Is Private By Default | Owner-only default and no public trips. | Pass: default-deny RLS and explicit share grants planned. |
+| IX: Living Scrapbook | Notes, ratings, and photo metadata must survive revisions. | Pass: contribution tables and preservation contract planned. |
+| X: Money and Memories Are Safe | Integer cents and durable contribution writes. | Pass: integer money fields and DB constraints planned. |
+
+No constitutional violations.
+
+## Project Structure
+
+### Documentation (this feature)
+
+```text
+specs/002-data-model-rls/
+├── plan.md              # This file (/speckit-plan command output)
+├── research.md          # Phase 0 output (/speckit-plan command)
+├── data-model.md        # Phase 1 output (/speckit-plan command)
+├── quickstart.md        # Phase 1 output (/speckit-plan command)
+├── contracts/           # Phase 1 output (/speckit-plan command)
+└── tasks.md             # Phase 2 output (/speckit-tasks command - NOT created by /speckit-plan)
+```
+
+### Source Code (repository root)
+<!--
+  ACTION REQUIRED: Replace the placeholder tree below with the concrete layout
+  for this feature. Delete unused options and expand the chosen structure with
+  real paths (e.g., apps/admin, packages/something). The delivered plan must
+  not include Option labels.
+-->
+
+```text
+src/
+├── app/
+├── db/
+│   ├── client.ts
+│   ├── schema.ts
+│   └── migrations/
+└── lib/
+    └── access/
+
+tests/
+├── db/
+│   ├── schema.test.ts
+│   ├── rls-owner.test.ts
+│   ├── rls-share-link.test.ts
+│   └── revision-preservation.test.ts
+└── e2e/
+    └── personal-vacation-mvp.spec.ts
+
+drizzle.config.ts
+drizzle/
+└── migrations generated by drizzle-kit
+```
+
+**Structure Decision**: Keep a single Next.js app. Add database schema and access helpers under `src/db` and `src/lib/access`, generated SQL migrations under `drizzle/`, and database integration tests under `tests/db`.
+
+## Complexity Tracking
+
+> **Fill ONLY if Constitution Check has violations that must be justified**
+
+No constitutional violations.
