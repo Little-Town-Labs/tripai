@@ -37,6 +37,7 @@ yarn-error.log*
 # local agent/tooling state
 .brooks-lint-history.json
 .mcp-auth/
+.codex/config.toml
 
 # env files (can opt-in for committing if needed)
 .env*

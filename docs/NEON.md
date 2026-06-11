@@ -34,9 +34,12 @@ The app expects these Neon values:
 
 ```env
 DATABASE_URL=
+NEON_API_KEY=
 NEON_AUTH_BASE_URL=
 NEON_AUTH_COOKIE_SECRET=
 ```
+
+`NEON_API_KEY` is used by `neonctl` and local MCP server authentication. Keep it out of committed files.
 
 For Next.js, `NEON_AUTH_COOKIE_SECRET` should be a secret value at least 32 characters long. Generate one locally with:
 
@@ -93,6 +96,14 @@ Codex:
 ```bash
 npx add-mcp https://mcp.neon.tech/mcp -a codex
 ```
+
+For API-key auth in Codex, use:
+
+```bash
+npx add-mcp https://mcp.neon.tech/mcp -a codex --header "Authorization: Bearer $NEON_API_KEY"
+```
+
+The generated project-local Codex config can contain the bearer token. Keep `.codex/config.toml` ignored and never commit it.
 
 Claude Code:
 
@@ -209,6 +220,6 @@ npx -y @neondatabase/mcp-server-neon start <YOUR_NEON_API_KEY>
 F1 should not be marked complete until:
 - Neon Postgres project exists.
 - Neon Auth is configured.
-- `DATABASE_URL`, `NEON_AUTH_BASE_URL`, and `NEON_AUTH_COOKIE_SECRET` are documented in local env setup.
+- `DATABASE_URL`, `NEON_API_KEY`, `NEON_AUTH_BASE_URL`, and `NEON_AUTH_COOKIE_SECRET` are documented in local env setup.
 - At least one agent or local developer environment can connect to Neon through MCP.
 - Stale or duplicate Neon API keys created during setup have been revoked.

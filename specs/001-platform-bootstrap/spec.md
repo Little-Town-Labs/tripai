@@ -29,7 +29,7 @@ This feature establishes the project baseline for Neon Postgres, Neon Auth, envi
 - Production owner auth UI. That belongs to F3.
 - Google Places/Directions integrations.
 - Claude generation.
-- Photo/object storage implementation.
+- Photo/object storage selection and implementation. That belongs to F10.
 
 ## Functional Requirements
 
@@ -41,6 +41,7 @@ This feature establishes the project baseline for Neon Postgres, Neon Auth, envi
 - FR-006: The foundation SHALL not store secrets in committed files.
 - FR-007: The foundation SHALL prepare for Drizzle migrations without requiring the full F2 schema yet.
 - FR-008: The foundation SHALL keep Next.js 16 conventions aligned with local `node_modules/next/dist/docs/`.
+- FR-009: The foundation SHALL not require photo bucket/object storage configuration.
 
 ## Success Criteria
 
@@ -48,6 +49,7 @@ This feature establishes the project baseline for Neon Postgres, Neon Auth, envi
 - The personal MVP still passes lint, typecheck, build, and e2e checks.
 - Stripe is not required to run or verify the app.
 - The next feature, F2 Data model & RLS policies, has an explicit place to add schema and migrations.
+- The local environment has validated Neon API access, database connectivity, and Neon Auth status without committing secrets.
 
 ## Open Questions
 
@@ -58,3 +60,5 @@ This feature establishes the project baseline for Neon Postgres, Neon Auth, envi
 
 - Stripe setup is deferred until F8 and does not block F1.
 - Drizzle and Neon runtime dependencies are deferred until F2 unless a live connection check requires a temporary CLI-only path.
+- Photo bucket/object storage selection is deferred until F10 and does not block F1.
+- F1 uses the existing Neon `tripai` project (`sparkling-thunder-06034517`) and defers runtime database dependencies until F2 schema work.

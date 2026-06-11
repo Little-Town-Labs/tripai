@@ -39,8 +39,9 @@ Both are constitutional commitments and therefore non-negotiable for launch. The
 ### Phase 0 — Foundation
 
 #### F1: Platform bootstrap
+**Status:** Done — validated against Neon project `tripai` on 2026-06-11.
 **Source:** Arch doc §Tech Stack, §Environment Variables
-**Description:** Neon Postgres project, Neon Auth configuration, env vars, Next.js 16 App Router baseline (read `node_modules/next/dist/docs/` before touching Next 16 APIs per `AGENTS.md`), Drizzle setup, Tailwind v4, CI skeleton (lint + typecheck + test runner), Vercel project link, object-storage vendor selection for photos, and Neon CLI/MCP setup per `docs/NEON.md`.
+**Description:** Neon Postgres project, Neon Auth configuration, env vars, Next.js 16 App Router baseline (read `node_modules/next/dist/docs/` before touching Next 16 APIs per `AGENTS.md`), Drizzle setup, Tailwind v4, CI skeleton (lint + typecheck + test runner), Vercel project link, and Neon CLI/MCP setup per `docs/NEON.md`. Photo bucket/object storage selection is deferred until F10.
 **Complexity:** Small
 **Priority:** P0
 **Blocks:** Everything
@@ -312,15 +313,14 @@ F1 (Bootstrap)
 - [x] Priorities assigned
 - [x] Constitutional deltas surfaced (F11, F12 added)
 - [x] Risks identified
-- [ ] Neon Postgres project created
-- [ ] Neon Auth configured
-- [ ] Object storage provider selected for photos
+- [x] Neon Postgres project created
+- [x] Neon Auth configured
 - [ ] Google Places + Directions API keys obtained
 - [ ] Anthropic API key obtained
 - [ ] Vercel project linked
 
 ### Phase 0 — Foundation
-- [ ] **F1: Platform bootstrap** — `/speckit-specify 1-platform-bootstrap`
+- [x] **F1: Platform bootstrap** — `specs/001-platform-bootstrap`
 - [ ] **F2: Data model & RLS policies** — `/speckit-specify 2-data-model`
 - [ ] **F3: Owner authentication** — `/speckit-specify 3-owner-auth`
 - [ ] Phase 0 gate: authenticated user can sign up / log in; empty DB with RLS verified
