@@ -12,6 +12,12 @@ export default defineConfig({
   },
   projects: [
     {
+      name: "desktop-chromium",
+      use: {
+        ...devices["Desktop Chrome"],
+      },
+    },
+    {
       name: "mobile-chromium",
       use: {
         ...devices["Pixel 5"],
@@ -19,7 +25,7 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: "npm run dev -- --hostname localhost",
+    command: "TRIPAI_E2E_AUTH_BYPASS=1 npm run dev -- --hostname localhost",
     url: "http://localhost:3000",
     reuseExistingServer: true,
     timeout: 30_000,

@@ -69,6 +69,7 @@ Both are constitutional commitments and therefore non-negotiable for launch. The
 ### Phase 1 — Generate a Trip
 
 #### F4: Intake form (responsive wizard)
+**Status:** Done — implemented as an authenticated responsive owner intake wizard with validation, owner-scoped draft persistence through RLS, and desktop/mobile E2E coverage on 2026-06-11.
 **Source:** Arch doc §AI Trip Generation Pipeline Step 1
 **Description:** Multi-step intake wizard capturing `TripIntake` fields (origin, dates, party, interests, budget, constraints). **Responsive: works on desktop and mobile** per Article VI. Saves to DB for authenticated users; saves to session for anonymous until purchase.
 **Complexity:** Medium

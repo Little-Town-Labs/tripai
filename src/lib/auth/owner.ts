@@ -98,6 +98,14 @@ type SessionUser = {
 };
 
 export async function getCurrentOwner(): Promise<TripAiOwner | null> {
+  if (process.env.TRIPAI_E2E_AUTH_BYPASS === "1" && process.env.NODE_ENV !== "production") {
+    return {
+      id: "00000000-0000-4000-8000-0000000000e2",
+      email: "e2e-owner@example.com",
+      displayName: "E2E Owner",
+    };
+  }
+
   const { auth } = await import("./server");
   const { data: session } = await auth.getSession();
   const user = session?.user as SessionUser | undefined;
