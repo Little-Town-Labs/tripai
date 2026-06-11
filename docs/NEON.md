@@ -34,12 +34,14 @@ The app expects these Neon values:
 
 ```env
 DATABASE_URL=
+DATABASE_TEST_URL=
 NEON_API_KEY=
 NEON_AUTH_BASE_URL=
 NEON_AUTH_COOKIE_SECRET=
 ```
 
 `NEON_API_KEY` is used by `neonctl` and local MCP server authentication. Keep it out of committed files.
+`DATABASE_TEST_URL` is used for F2 database and RLS tests and must point at a Neon testing branch, not the default branch.
 
 For Next.js, `NEON_AUTH_COOKIE_SECRET` should be a secret value at least 32 characters long. Generate one locally with:
 
@@ -104,6 +106,30 @@ npx add-mcp https://mcp.neon.tech/mcp -a codex --header "Authorization: Bearer $
 ```
 
 The generated project-local Codex config can contain the bearer token. Keep `.codex/config.toml` ignored and never commit it.
+
+## Testing Branches
+
+Use a dedicated Neon branch for schema, migration, and RLS tests. For F2, the expected branch name is `test-data-model-rls`.
+
+Create the branch:
+
+```bash
+set -a
+. ./.env.local
+set +a
+npx neonctl@latest branches create --project-id sparkling-thunder-06034517 --name test-data-model-rls --output json
+```
+
+Fetch its connection string:
+
+```bash
+set -a
+. ./.env.local
+set +a
+npx neonctl@latest connection-string test-data-model-rls --project-id sparkling-thunder-06034517
+```
+
+Store that value as `DATABASE_TEST_URL` in `.env.local`. Do not commit it.
 
 Claude Code:
 
