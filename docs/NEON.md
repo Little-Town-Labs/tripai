@@ -1,0 +1,214 @@
+# Neon Setup Runbook
+
+This project uses Neon for Postgres and owner authentication. Use this runbook during F1 Platform Bootstrap and whenever an agent needs Neon database access.
+
+Primary docs:
+- Neon docs index for agents: https://neon.com/docs/llms.txt
+- MCP client setup: https://neon.com/docs/ai/connect-mcp-clients-to-neon
+- Neon MCP overview and security guidance: https://neon.com/docs/ai/neon-mcp-server
+- Neon CLI init reference: https://neon.com/docs/reference/cli-init
+
+## Security Rule
+
+The Neon MCP Server is for development and testing only. Always review database, branch, migration, schema, and destructive operations before approving execution. Do not expose production credentials through agent prompts, logs, screenshots, or committed config files.
+
+## Project Bootstrap
+
+Use the Neon CLI wizard when setting up a local workstation or agent environment:
+
+```bash
+npx neonctl@latest init
+```
+
+`neonctl init` creates a Neon API key, configures MCP with API key auth, installs supported editor extensions where applicable, wires supported assistants, and installs Neon agent skills. Restart the assistant/editor after it completes, then ask the assistant:
+
+```text
+Get started with Neon
+```
+
+Each run creates a new Neon API key. If the command is run more than once, review Neon API keys in the console and revoke stale keys.
+
+## Environment Variables
+
+The app expects these Neon values:
+
+```env
+DATABASE_URL=
+NEON_AUTH_BASE_URL=
+NEON_AUTH_COOKIE_SECRET=
+```
+
+For Next.js, `NEON_AUTH_COOKIE_SECRET` should be a secret value at least 32 characters long. Generate one locally with:
+
+```bash
+openssl rand -base64 32
+```
+
+## MCP Setup
+
+For the full local setup, prefer:
+
+```bash
+npx neonctl@latest init
+```
+
+If only MCP config is needed:
+
+```bash
+npx add-mcp https://mcp.neon.tech/mcp
+```
+
+Use `-g` for global user-level setup instead of project-level setup. Use `-a <agent>` to target a specific client. Check the live supported-agent list from your installed CLI with:
+
+```bash
+npx add-mcp list-agents
+```
+
+Known `--agent` values include:
+
+| Assistant | Agent value |
+|---|---|
+| Claude Code | `claude-code` |
+| Codex | `codex` |
+| Cursor | `cursor` |
+| VS Code | `vscode` |
+| Claude Desktop | `claude-desktop` |
+| Cline | `cline` |
+| Cline CLI | `cline-cli` |
+| Windsurf | `windsurf` |
+| Zed | `zed` |
+| Gemini CLI | `gemini-cli` |
+| GitHub Copilot CLI | `github-copilot-cli` |
+| Goose | `goose` |
+| OpenCode | `opencode` |
+| Antigravity | `antigravity` |
+| MCPorter | `mcporter` |
+
+Aliases may exist, such as `cline-vscode` to `cline`, `gemini` to `gemini-cli`, and `github-copilot` to `vscode`.
+
+## Agent-Specific Commands
+
+Codex:
+
+```bash
+npx add-mcp https://mcp.neon.tech/mcp -a codex
+```
+
+Claude Code:
+
+```bash
+npx add-mcp https://mcp.neon.tech/mcp -a claude-code
+```
+
+Cursor:
+
+```bash
+npx add-mcp https://mcp.neon.tech/mcp -a cursor
+```
+
+VS Code with GitHub Copilot:
+
+```bash
+npx add-mcp https://mcp.neon.tech/mcp -a vscode
+```
+
+Claude Desktop:
+
+```bash
+npx add-mcp https://mcp.neon.tech/mcp -a claude-desktop
+```
+
+## Local MCP Server
+
+Use local API-key auth when OAuth is awkward or when the client does not handle remote MCP well. Replace `<YOUR_NEON_API_KEY>` with a Neon API key from the console.
+
+Generic MCP config:
+
+```json
+{
+  "mcpServers": {
+    "neon": {
+      "command": "npx",
+      "args": ["-y", "@neondatabase/mcp-server-neon", "start", "<YOUR_NEON_API_KEY>"]
+    }
+  }
+}
+```
+
+Claude Code local command:
+
+```bash
+claude mcp add neon -- npx -y @neondatabase/mcp-server-neon start "<YOUR_NEON_API_KEY>"
+```
+
+VS Code user settings shape:
+
+```json
+{
+  "mcp": {
+    "servers": {
+      "neon": {
+        "command": "npx",
+        "args": ["-y", "@neondatabase/mcp-server-neon", "start", "<YOUR_NEON_API_KEY>"]
+      }
+    }
+  }
+}
+```
+
+## OAuth Remote MCP
+
+For clients that need manual remote MCP configuration:
+
+```json
+{
+  "mcpServers": {
+    "neon": {
+      "command": "npx",
+      "args": ["-y", "mcp-remote@latest", "https://mcp.neon.tech/mcp"]
+    }
+  }
+}
+```
+
+Restart the client, then authorize Neon in the browser when prompted.
+
+For clients that do not support Streamable HTTP, Neon documents a deprecated SSE endpoint:
+
+```text
+https://mcp.neon.tech/sse
+```
+
+SSE does not support API key authentication.
+
+## Troubleshooting
+
+OAuth error:
+
+```json
+{"code":"invalid_request","error":"invalid redirect uri"}
+```
+
+Typical fix:
+
+```bash
+rm -rf ~/.mcp-auth
+```
+
+Then restart the MCP client and rerun the OAuth flow.
+
+If a client does not store MCP config as JSON, use one of these direct commands when prompted:
+
+```bash
+npx -y mcp-remote https://mcp.neon.tech/mcp
+npx -y @neondatabase/mcp-server-neon start <YOUR_NEON_API_KEY>
+```
+
+## F1 Acceptance Notes
+
+F1 should not be marked complete until:
+- Neon Postgres project exists.
+- Neon Auth is configured.
+- `DATABASE_URL`, `NEON_AUTH_BASE_URL`, and `NEON_AUTH_COOKIE_SECRET` are documented in local env setup.
+- At least one agent or local developer environment can connect to Neon through MCP.
+- Stale or duplicate Neon API keys created during setup have been revoked.

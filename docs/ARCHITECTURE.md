@@ -52,17 +52,19 @@ Families **buy the trip once and own it forever**. During and after the trip, th
 |---|---|---|
 | Framework | **Next.js 16** (App Router, React 19) | Already in repo; Server Components + Server Functions for the AI pipeline |
 | Language | **TypeScript** | Already configured |
-| Database | **Supabase (Postgres)** | Auth + DB + Storage in one platform; generous free tier |
-| Auth | **Supabase Auth** | Email/password + OAuth (Google); integrates with RLS for row-level security |
+| Database | **Neon Postgres** | Serverless Postgres; avoids Supabase project limits while preserving SQL, Drizzle, and RLS-oriented design |
+| Auth | **Neon Auth with Better Auth** | Email/password + OAuth (Google); auth data lives with the Neon database and can be queried directly |
 | ORM | **Drizzle** | Lightweight, type-safe, edge-compatible |
 | Payments | **Stripe Checkout** | One-time payments; webhook-driven fulfillment |
 | AI | **Anthropic Claude API** (Sonnet 4.6 for revisions, Opus 4.6 for initial generation) | Strong structured output, tool use, streaming |
 | Venue Data | **Google Places API (New)** | Real-time venue lookup, hours, ratings, photos, place IDs |
 | Routing | **Google Directions API** | Drive times, distances, waypoints |
 | Maps | **Leaflet + react-leaflet** | Already in repo; free, no API key needed for tiles |
-| Photo Storage | **Supabase Storage** | S3-compatible, integrates with auth/RLS |
+| Photo Storage | **S3-compatible object storage (vendor TBD)** | Neon does not provide object storage; keep photos in durable object storage and authorize access through app/database policy |
 | Styling | **Tailwind CSS v4** | Already configured |
 | Deployment | **Vercel** | Native Next.js hosting; edge functions for streaming |
+
+Neon setup, CLI, MCP, and agent connection instructions live in [`docs/NEON.md`](NEON.md).
 
 ---
 
@@ -158,7 +160,7 @@ Families **buy the trip once and own it forever**. During and after the trip, th
         │ day_id?  │   │ user_id  │   │ day_id?  │
         │ trip_id  │   │ stars    │   │ trip_id  │
         │ user_id  │   │ text     │   │ user_id  │
-        │ content  │   │ tags     │   │ url      │  ← Supabase Storage path
+        │ content  │   │ tags     │   │ url      │  ← object storage path
         │ created  │   │ created  │   │ caption  │
         └──────────┘   └──────────┘   │ created  │
                                        └──────────┘
@@ -294,7 +296,7 @@ src/app/
 │   │       ├── ratings/route.ts     # CRUD ratings
 │   │       └── photos/route.ts      # Upload/list photos
 │   └── auth/
-│       └── callback/route.ts        # Supabase auth callback
+│       └── [...neon]/route.ts       # Neon Auth API handler
 │
 src/components/
 ├── intake/                           # Multi-step form components
@@ -312,7 +314,7 @@ src/components/
 src/lib/
 ├── db/
 │   ├── schema.ts                     # Drizzle schema (all tables)
-│   ├── client.ts                     # Drizzle + Supabase client
+│   ├── client.ts                     # Drizzle + Neon Postgres client
 │   └── migrations/                   # Drizzle migrations
 ├── ai/
 │   ├── planner.ts                    # Planner prompt + Claude API call
@@ -337,7 +339,7 @@ src/lib/
 
 ### Tasks
 
-1. **Supabase setup** — project, auth, DB, storage bucket
+1. **Neon setup** — Postgres project, Neon Auth, env vars, DB branches
 2. **Drizzle schema** — all tables from data model above
 3. **Intake form** — multi-step wizard (origin, dates, party, interests, budget, constraints)
 4. **Google Places integration** — server-side search + detail lookup
@@ -365,10 +367,17 @@ src/lib/
 ## Environment Variables Required
 
 ```env
-# Supabase
-NEXT_PUBLIC_SUPABASE_URL=
-NEXT_PUBLIC_SUPABASE_ANON_KEY=
-SUPABASE_SERVICE_ROLE_KEY=
+# Neon
+DATABASE_URL=
+NEON_AUTH_BASE_URL=
+NEON_AUTH_COOKIE_SECRET=
+
+# Object storage
+STORAGE_ENDPOINT=
+STORAGE_REGION=
+STORAGE_BUCKET=
+STORAGE_ACCESS_KEY_ID=
+STORAGE_SECRET_ACCESS_KEY=
 
 # Anthropic
 ANTHROPIC_API_KEY=
@@ -402,7 +411,7 @@ At a **$39–$59 price point** per trip, margins are healthy (~95%).
 ## Next Steps
 
 1. Review and approve this architecture
-2. Set up Supabase project + Stripe account
+2. Set up Neon project/Auth + Stripe account
 3. Get Google Places & Directions API keys
 4. Get Anthropic API key
 5. Begin Phase 1 implementation (intake form → AI pipeline → checkout → trip view)

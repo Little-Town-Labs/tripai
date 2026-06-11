@@ -40,7 +40,7 @@ Both are constitutional commitments and therefore non-negotiable for launch. The
 
 #### F1: Platform bootstrap
 **Source:** Arch doc §Tech Stack, §Environment Variables
-**Description:** Supabase project, env vars, Next.js 16 App Router baseline (read `node_modules/next/dist/docs/` before touching Next 16 APIs per `AGENTS.md`), Drizzle setup, Tailwind v4, CI skeleton (lint + typecheck + test runner), Vercel project link.
+**Description:** Neon Postgres project, Neon Auth configuration, env vars, Next.js 16 App Router baseline (read `node_modules/next/dist/docs/` before touching Next 16 APIs per `AGENTS.md`), Drizzle setup, Tailwind v4, CI skeleton (lint + typecheck + test runner), Vercel project link, object-storage vendor selection for photos, and Neon CLI/MCP setup per `docs/NEON.md`.
 **Complexity:** Small
 **Priority:** P0
 **Blocks:** Everything
@@ -55,8 +55,8 @@ Both are constitutional commitments and therefore non-negotiable for launch. The
 **Constitution:** Articles II, VIII, IX
 
 #### F3: Owner authentication
-**Source:** Arch doc §Tech Stack (Supabase Auth), §App Routes (`(auth)/`)
-**Description:** Email/password + Google OAuth via Supabase Auth. Login, signup, session handling, auth callback route, route protection middleware. **Only the trip owner authenticates — family members never do.**
+**Source:** Arch doc §Tech Stack (Neon Auth), §App Routes (`(auth)/`)
+**Description:** Email/password + Google OAuth via Neon Auth with Better Auth. Login, signup, session handling, auth route handler, route protection middleware. **Only the trip owner authenticates — family members never do.**
 **Complexity:** Small
 **Priority:** P0
 **Depends on:** F1, F2
@@ -119,7 +119,7 @@ Both are constitutional commitments and therefore non-negotiable for launch. The
 
 #### F10: Scrapbook (notes, ratings, photos)
 **Source:** Arch doc §Data Model (`Note`, `Rating`, `Photo`), §App Routes (`api/trips/[tripId]/notes|ratings|photos`)
-**Description:** Per-stop, per-day, per-trip notes and ratings (1–5 stars + text). Photo upload with client-side resize/compress, stored in Supabase Storage with RLS. **First-class in the UI** (not buried behind a "more" menu) per Article IX. Durable writes: no "uploaded" confirmation until storage confirms (Article X). Survives revisions per F11.
+**Description:** Per-stop, per-day, per-trip notes and ratings (1–5 stars + text). Photo upload with client-side resize/compress, stored in S3-compatible object storage with access authorized through the app/database policy. **First-class in the UI** (not buried behind a "more" menu) per Article IX. Durable writes: no "uploaded" confirmation until storage confirms (Article X). Survives revisions per F11.
 **Complexity:** Medium
 **Priority:** P0
 **Depends on:** F9
@@ -312,7 +312,9 @@ F1 (Bootstrap)
 - [x] Priorities assigned
 - [x] Constitutional deltas surfaced (F11, F12 added)
 - [x] Risks identified
-- [ ] Supabase project created
+- [ ] Neon Postgres project created
+- [ ] Neon Auth configured
+- [ ] Object storage provider selected for photos
 - [ ] Stripe account created
 - [ ] Google Places + Directions API keys obtained
 - [ ] Anthropic API key obtained
@@ -348,6 +350,8 @@ F1 (Bootstrap)
 ---
 
 ## Next Steps
+
+**Short-term vacation slice:** build the local-first MVP described in `docs/LOCAL_MVP.md` before the full F1-F12 roadmap. This is intentionally not a replacement for Neon/Auth/AI/Stripe delivery; it is a usable browser-only planning aid for this week's trip.
 
 **Recommended approach: phase-by-phase.** Specify all features in Phase 0, implement Phase 0, then specify Phase 1, implement Phase 1, etc. This lets lessons from early phases inform later specs and avoids locking in decisions before you learn from the first build.
 

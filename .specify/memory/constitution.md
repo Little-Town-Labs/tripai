@@ -190,7 +190,7 @@ Privacy by default is both the ethical baseline and the trust foundation for a p
 - Notes, ratings, and photos SHALL be editable by the owner and by share-link contributors (subject to Article II moderation).
 - Contributions MUST persist across revisions: revising the itinerary MUST NOT destroy notes, ratings, or photos attached to stops that remain in the revised plan.
 - When a revision removes a stop that has attached contributions, the app MUST warn the owner before committing the revision and offer to preserve the contributions at the day or trip level.
-- Photos MUST be stored durably (Supabase Storage or equivalent), with RLS policies matching the trip's access model.
+- Photos MUST be stored durably in object storage or equivalent, with access policies matching the trip's access model.
 - The scrapbook experience MUST be first-class in the UI, not buried behind a "more" menu. Viewing the trip and adding to it are the same surface.
 
 **Rationale:**
@@ -211,7 +211,7 @@ The scrapbook is the second half of the "plan it, live it, keep it" tagline and 
 - Fulfillment (marking a trip as purchased) SHALL be driven exclusively by verified webhook events, not by client-side success redirects.
 - The app MUST NOT charge recurring fees on purchased trips (reinforces Article I).
 - Revisions, crashes, or failed deploys MUST NOT destroy user-generated content (notes, ratings, photos). Writes to scrapbook data MUST be durable before the UI acknowledges success.
-- Photo uploads MUST be stored with redundancy per the underlying storage provider's durability guarantee (Supabase Storage baseline). The app SHALL NOT display "uploaded" until the storage provider has confirmed the write.
+- Photo uploads MUST be stored with redundancy per the underlying storage provider's durability guarantee. The app SHALL NOT display "uploaded" until the storage provider has confirmed the write.
 - Backups or point-in-time recovery SHALL be configured for the primary database such that a bad deploy within the last 24 hours can be rolled back without data loss.
 
 **Rationale:**
