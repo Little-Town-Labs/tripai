@@ -15,7 +15,7 @@ test("US1 auth pages render owner signup and signin choices", async ({ page }) =
 });
 
 test("US2 signed-out visitor is redirected away from owner app", async ({ page }) => {
-  await page.goto("/app");
+  await page.goto("/app?disableE2EBypass=1");
 
   await expect(page).toHaveURL(/\/auth\/sign-in/);
   await expect(page.getByRole("heading", { name: "Sign in to TripAI" })).toBeVisible();
