@@ -30,6 +30,7 @@ export function PlanReview({ review }: { review: PlanReviewModel }) {
           </div>
           <aside className="space-y-5">
             <RouteMapPreview review={review} />
+            <CheckoutEntry review={review} />
             <RevisionRequestForm tripId={review.trip.id} disabled={!review.canRequestPrePurchaseRevision} />
             <VersionList review={review} />
           </aside>
@@ -59,6 +60,24 @@ function ProgressReadyState({ review }: { review: PlanReviewModel }) {
       {review.selectedRevision ? (
         <p className="mt-3 text-sm text-stone-600">Selected revision #{review.selectedRevision.revisionNumber}</p>
       ) : null}
+    </section>
+  );
+}
+
+function CheckoutEntry({ review }: { review: PlanReviewModel }) {
+  return (
+    <section className="rounded-md border border-stone-300 bg-white p-4 shadow-sm">
+      <h2 className="text-lg font-semibold">Ready to buy?</h2>
+      <p className="mt-2 text-sm leading-6 text-stone-700">
+        Checkout is feature-toggled off until payment settings are enabled, but the purchase path is ready for this
+        reviewed plan.
+      </p>
+      <Link
+        href={`/app/plan/${review.trip.id}/checkout`}
+        className="mt-4 inline-flex min-h-11 items-center rounded-md bg-emerald-800 px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-900"
+      >
+        Review checkout
+      </Link>
     </section>
   );
 }

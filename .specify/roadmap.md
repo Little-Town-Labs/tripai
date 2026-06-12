@@ -111,6 +111,7 @@ Both are constitutional commitments and therefore non-negotiable for launch. The
 ### Phase 2 — Sell & Own a Trip
 
 #### F8: Stripe checkout & fulfillment
+**Status:** Done — implemented behind disabled-by-default `TRIPAI_STRIPE_ENABLED`, with owner-only checkout entry, hosted one-time Checkout session creation, integer-cent price validation, verified raw-body webhook fulfillment, and fake-provider checkout tests on 2026-06-11.
 **Source:** Arch doc §App Routes (`plan/[tripId]/checkout`, `api/stripe/webhook`)
 **Description:** Stripe Checkout session creation for one-time payment. **Integer cents only** (Article X). Webhook handler verifies signatures, marks trip as purchased, no reliance on client-side success redirect. No subscription SKUs (Article I). Post-purchase unlock of notes/ratings/photos.
 **Complexity:** Medium
