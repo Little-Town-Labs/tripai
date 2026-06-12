@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "leaflet/dist/leaflet.css";
 
 :root {
   --background: #ffffff;
@@ -30,4 +31,23 @@ input,
 textarea,
 select {
   font: inherit;
+}
+
+.trip-map-marker {
+  align-items: center;
+  background: #166534;
+  border: 2px solid #ffffff;
+  border-radius: 9999px;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.3);
+  color: #ffffff;
+  display: flex;
+  font-size: 0.75rem;
+  font-weight: 700;
+  height: 1.75rem;
+  justify-content: center;
+  width: 1.75rem;
+}
+
+.trip-map-marker span {
+  line-height: 1;
 }

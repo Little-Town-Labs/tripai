@@ -1,6 +1,8 @@
 import type { TripDetail } from "@/lib/trip-detail/service";
 
 import { formatRouteFacts } from "./format";
+import { TripMap } from "./trip-map";
+import { buildTripMapStops } from "./trip-map-model";
 
 export function TripRouteOverview({ detail }: { detail: TripDetail }) {
   const stops = detail.days.flatMap((day) =>
@@ -9,6 +11,7 @@ export function TripRouteOverview({ detail }: { detail: TripDetail }) {
       dayNumber: day.dayNumber,
     })),
   );
+  const mapStops = buildTripMapStops(detail);
   const totalMiles = sumNullable(detail.days.map((day) => day.totalMiles));
   const totalDriveTime = sumNullable(detail.days.map((day) => day.driveTimeMinutes));
 
@@ -19,6 +22,7 @@ export function TripRouteOverview({ detail }: { detail: TripDetail }) {
         {formatRouteFacts(totalMiles, totalDriveTime)} across {detail.days.length} day
         {detail.days.length === 1 ? "" : "s"} and {stops.length} stop{stops.length === 1 ? "" : "s"}.
       </p>
+      <TripMap stops={mapStops} />
       {stops.length > 0 ? (
         <ol className="mt-5 space-y-3 border-l-2 border-dashed border-emerald-800/50 pl-4">
           {stops.map((stop, index) => (

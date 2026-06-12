@@ -16,10 +16,10 @@ Implemented roadmap features:
 - F6 AI generation pipeline: OpenRouter-backed provider contract, grounded planner, validator, narrator, progress events.
 - F7 Plan review: owner-only plan page, itinerary display, progress-ready state, pre-purchase revision requests, version browsing.
 - F8 Checkout and fulfillment: disabled-by-default Stripe checkout path, one-time Checkout session creation, raw-body webhook verification, webhook-only purchase fulfillment.
-- F9 Trip detail co-pilot: owner-only purchased trip view, active day/current-next stop context, persisted route overview, Google Maps/Waze handoffs, park official links.
+- F9 Trip detail co-pilot: owner-only purchased trip view, active day/current-next stop context, persisted route overview, lightweight Leaflet/OpenStreetMap stop map, Google Maps/Waze handoffs, park official links.
 - F10 Scrapbook notes and ratings: disabled-by-default owner scrapbook surface, durable trip/day/stop notes, stop ratings, photo-storage placeholder.
 - F11 Post-purchase and mid-trip revisions: owner revision counts, visited-stop marking, draft candidate controls, preservation-required commits for removed scrapbook content, previous-version restore.
-- F12 Credential-free family sharing: owner-created hash-only share links, `/share/[token]` account-free trip view, family notes/ratings with display names, immediate revocation, and owner moderation.
+- F12 Credential-free family sharing: owner-created hash-only share links, `/share/[token]` account-free trip view with the same lightweight stop map, family notes/ratings with display names, immediate revocation, and owner moderation.
 - F13 Data export and deletion ops: internal support commands and runbook for owner-verified trip export and permanent trip deletion.
 
 MVP roadmap implementation is complete through F13; remaining launch work is production/security review and external account gates.
@@ -32,7 +32,7 @@ MVP roadmap implementation is complete through F13; remaining launch work is pro
 - Family share links are opt-in, revocable, and store only token hashes. Raw share URLs are returned only when the owner creates a link.
 - F11 revision generation currently uses a conservative verified-route candidate seam in the app action path; provider-backed replanning can replace that generator without changing quota, commit, preservation, or restore rules.
 - Checkout success redirects do not mark trips purchased; only verified Stripe webhooks do.
-- Trip detail uses persisted route/place data and outbound navigation links; it does not implement turn-by-turn navigation, live map tiles, or live Disney data.
+- Trip detail uses persisted route/place data, lightweight OpenStreetMap tiles for stop display, and outbound navigation links; it does not implement turn-by-turn navigation or live Disney data.
 - Automated provider tests use fakes. Live Google, OpenRouter, and Stripe calls are manual/credential-gated.
 - Data export/deletion is internal only. Use `docs/SUPPORT_DATA_OPS.md` and never print or commit database URLs, raw share tokens, or exported archives.
 

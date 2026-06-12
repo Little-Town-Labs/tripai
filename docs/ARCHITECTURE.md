@@ -59,7 +59,7 @@ Families **buy the trip once and own it forever**. During and after the trip, th
 | AI | **OpenRouter** using `google/gemma-4-26b-a4b-it` | Structured JSON output with provider abstraction for planner and narrator calls |
 | Venue Data | **Google Places API (New)** | Real-time venue lookup, hours, ratings, photos, place IDs |
 | Routing | **Google Directions API** | Drive times, distances, waypoints |
-| Maps | **Current: route overview + Google/Waze handoffs. Candidate: Leaflet + OpenStreetMap tiles** | The older Disney tracker uses Leaflet/OSM; TripAI can adopt it later for in-app map display without a Google Maps tile key |
+| Maps | **Leaflet + OpenStreetMap tiles, with Google/Waze handoffs** | Free in-app stop map for stored coordinates; live navigation remains an outbound handoff |
 | Photo Storage | **S3-compatible object storage (vendor TBD)** | Neon does not provide object storage; keep photos in durable object storage and authorize access through app/database policy |
 | Styling | **Tailwind CSS v4** | Already configured |
 | Deployment | **Vercel** | Native Next.js hosting; edge functions for streaming |
@@ -306,7 +306,7 @@ src/components/
 ├── trip/                             # Trip detail components
 │   ├── DaySection.tsx                # (evolve existing)
 │   ├── StopCard.tsx                  # (evolve existing)
-│   ├── TripRouteOverview.tsx         # Current no-key route summary; may evolve into Leaflet/OSM map
+│   ├── TripRouteOverview.tsx         # Route summary plus Leaflet/OSM stop map when coordinates exist
 │   ├── NoteEditor.tsx
 │   ├── RatingStars.tsx
 │   └── PhotoUpload.tsx
