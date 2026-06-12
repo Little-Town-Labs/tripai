@@ -120,8 +120,8 @@ Both are constitutional commitments and therefore non-negotiable for launch. The
 
 #### F9: Trip detail view (co-pilot UX)
 **Status:** Done — implemented as `/app/trips/[tripId]` owner-only purchased trip co-pilot view with current/next stop context, persisted route overview, Google Maps/Waze handoffs, park official links, and no live map/Disney dependency on 2026-06-12.
-**Source:** Arch doc §App Routes (`trips/[tripId]`), §Components (`TripMap`, `DaySection`, `StopCard`)
-**Description:** The in-trip experience. Day-by-day itinerary, Leaflet map, stop cards with ETA/distance/next-stop always visible. **Mobile-first** per Article VI. Every stop has one-tap hand-offs to Waze and Google Maps for navigation (Article VII). Park stops link out to the Disney app. Large tappable targets (≥44px), high-contrast typography, glanceable layout. Owner-only view.
+**Source:** Arch doc §App Routes (`trips/[tripId]`), §Components (`TripRouteOverview`, `DaySection`, `StopCard`)
+**Description:** The in-trip experience. Day-by-day itinerary, route overview, stop cards with ETA/distance/next-stop always visible. **Mobile-first** per Article VI. Every stop has one-tap hand-offs to Waze and Google Maps for navigation (Article VII). Park stops link out to the Disney app when applicable. Large tappable targets (≥44px), high-contrast typography, glanceable layout. Owner-only view. Leaflet/OpenStreetMap remains a candidate enhancement for an in-app live map surface.
 **Complexity:** Large
 **Priority:** P0
 **Depends on:** F8
@@ -327,9 +327,9 @@ F1 (Bootstrap)
 - [x] Risks identified
 - [x] Neon Postgres project created
 - [x] Neon Auth configured
-- [ ] Google Places + Directions API keys obtained
-- [ ] Anthropic API key obtained
-- [ ] Vercel project linked
+- [ ] Google Places + Directions API keys available locally for MVP validation
+- [x] OpenRouter API key available locally for MVP validation
+- [x] Vercel project linked (`poorlyordereds-projects/tripai`)
 
 ### Phase 0 — Foundation
 - [x] **F1: Platform bootstrap** — `specs/001-platform-bootstrap`
@@ -345,11 +345,11 @@ F1 (Bootstrap)
 - [ ] Phase 1 gate: a user can submit intake and see a grounded, streaming, revisable plan
 
 ### Phase 2 — Sell & Own a Trip
-- [ ] Stripe account created
+- [x] Stripe intentionally deferred behind `TRIPAI_STRIPE_ENABLED=0` for this MVP
 - [x] **F8: Stripe checkout & fulfillment** — `specs/008-stripe-checkout-fulfillment`
 - [x] **F9: Trip detail view (co-pilot UX)** — `specs/009-trip-detail-copilot`
 - [x] **F10: Scrapbook (notes, ratings, photos)** — `specs/010-scrapbook`
-- [ ] Phase 2 gate: a user can buy a trip and interact with it as an owner
+- [x] Phase 2 gate: Stripe checkout is implemented but intentionally disabled; owner interaction continues through the purchased-trip surfaces for this MVP
 
 ### Phase 3 — Adapt & Share (MVP completion)
 - [x] **F11: Post-purchase & mid-trip revisions** — `specs/011-mid-trip-revisions`

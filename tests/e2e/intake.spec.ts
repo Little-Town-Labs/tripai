@@ -49,8 +49,8 @@ test("US2 invalid intake shows errors and preserves entered values", async ({ pa
   await expect(page.getByLabel("Starting point")).toHaveValue("St. Louis, MO");
 });
 
-test("US2 signed-out visitor is redirected away from intake when bypass is disabled", async ({ browser }) => {
-  const context = await browser.newContext({ baseURL: "http://localhost:3000" });
+test("US2 signed-out visitor is redirected away from intake when bypass is disabled", async ({ baseURL, browser }) => {
+  const context = await browser.newContext({ baseURL });
   const page = await context.newPage();
 
   await page.goto("/app/intake?disableE2EBypass=1");

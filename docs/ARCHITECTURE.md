@@ -56,10 +56,10 @@ Families **buy the trip once and own it forever**. During and after the trip, th
 | Auth | **Neon Auth with Better Auth** | Email/password + OAuth (Google); auth data lives with the Neon database and can be queried directly |
 | ORM | **Drizzle** | Lightweight, type-safe, edge-compatible |
 | Payments | **Stripe Checkout** | One-time payments; webhook-driven fulfillment |
-| AI | **Anthropic Claude API** (Sonnet 4.6 for revisions, Opus 4.6 for initial generation) | Strong structured output, tool use, streaming |
+| AI | **OpenRouter** using `google/gemma-4-26b-a4b-it` | Structured JSON output with provider abstraction for planner and narrator calls |
 | Venue Data | **Google Places API (New)** | Real-time venue lookup, hours, ratings, photos, place IDs |
 | Routing | **Google Directions API** | Drive times, distances, waypoints |
-| Maps | **Leaflet + react-leaflet** | Already in repo; free, no API key needed for tiles |
+| Maps | **Current: route overview + Google/Waze handoffs. Candidate: Leaflet + OpenStreetMap tiles** | The older Disney tracker uses Leaflet/OSM; TripAI can adopt it later for in-app map display without a Google Maps tile key |
 | Photo Storage | **S3-compatible object storage (vendor TBD)** | Neon does not provide object storage; keep photos in durable object storage and authorize access through app/database policy |
 | Styling | **Tailwind CSS v4** | Already configured |
 | Deployment | **Vercel** | Native Next.js hosting; edge functions for streaming |
@@ -306,7 +306,7 @@ src/components/
 ├── trip/                             # Trip detail components
 │   ├── DaySection.tsx                # (evolve existing)
 │   ├── StopCard.tsx                  # (evolve existing)
-│   ├── TripMap.tsx                   # (evolve existing)
+│   ├── TripRouteOverview.tsx         # Current no-key route summary; may evolve into Leaflet/OSM map
 │   ├── NoteEditor.tsx
 │   ├── RatingStars.tsx
 │   └── PhotoUpload.tsx
@@ -374,10 +374,12 @@ DATABASE_URL=
 NEON_AUTH_BASE_URL=
 NEON_AUTH_COOKIE_SECRET=
 
-# Anthropic
-ANTHROPIC_API_KEY=
+# OpenRouter
+OPENROUTER_API_KEY=
 
 # Google
+GOOGLE_MAPS_API_KEY=
+# Compatibility names accepted by the current adapter if keys are split.
 GOOGLE_PLACES_API_KEY=
 GOOGLE_DIRECTIONS_API_KEY=
 
@@ -415,5 +417,5 @@ At a **$39–$59 price point** per trip, margins are healthy (~95%).
 1. Review and approve this architecture
 2. Set up Neon project/Auth + Stripe account
 3. Get Google Places & Directions API keys
-4. Get Anthropic API key
+4. Get OpenRouter API key
 5. Begin Phase 1 implementation (intake form → AI pipeline → checkout → trip view)
