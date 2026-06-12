@@ -99,6 +99,7 @@ Both are constitutional commitments and therefore non-negotiable for launch. The
 **Depends on:** F2, F5
 
 #### F7: Plan review & pre-purchase revisions
+**Status:** Done — implemented as an authenticated owner-only review page with persisted draft itinerary display, progress-ready states, unlimited pre-purchase revision request capture, and previous-version browsing on 2026-06-11.
 **Source:** Arch doc §AI Trip Generation Pipeline Step 6, §App Routes (`plan/[tripId]`)
 **Description:** Streaming review page that displays the trip as it's generated, then the full plan with map. Natural-language revision chat. **Unlimited** revisions before purchase (Article V). Previous version browsable before the next revision commits.
 **Complexity:** Medium
