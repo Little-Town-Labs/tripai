@@ -20,8 +20,9 @@ Implemented roadmap features:
 - F10 Scrapbook notes and ratings: disabled-by-default owner scrapbook surface, durable trip/day/stop notes, stop ratings, photo-storage placeholder.
 - F11 Post-purchase and mid-trip revisions: owner revision counts, visited-stop marking, draft candidate controls, preservation-required commits for removed scrapbook content, previous-version restore.
 - F12 Credential-free family sharing: owner-created hash-only share links, `/share/[token]` account-free trip view, family notes/ratings with display names, immediate revocation, and owner moderation.
+- F13 Data export and deletion ops: internal support commands and runbook for owner-verified trip export and permanent trip deletion.
 
-Next roadmap feature: F13 Data export and deletion ops.
+MVP roadmap implementation is complete through F13; remaining launch work is production/security review and external account gates.
 
 ## Important Boundaries
 
@@ -33,6 +34,7 @@ Next roadmap feature: F13 Data export and deletion ops.
 - Checkout success redirects do not mark trips purchased; only verified Stripe webhooks do.
 - Trip detail uses persisted route/place data and outbound navigation links; it does not implement turn-by-turn navigation, live map tiles, or live Disney data.
 - Automated provider tests use fakes. Live Google, OpenRouter, and Stripe calls are manual/credential-gated.
+- Data export/deletion is internal only. Use `docs/SUPPORT_DATA_OPS.md` and never print or commit database URLs, raw share tokens, or exported archives.
 
 ## Local Setup
 
@@ -107,10 +109,19 @@ npm run test:trip-detail
 npm run test:scrapbook
 npm run test:revisions
 npm run test:sharing
+npm run test:ops
 npm run test:e2e
 ```
 
 DB-backed suites reset the Neon testing branch. Run DB/auth/feature DB suites sequentially when running locally.
+
+Internal support command:
+
+```bash
+npm run ops:trip-data -- export --database-url "$DATABASE_URL" --owner-id "<OWNER_UUID>" --trip-id "<TRIP_UUID>" --output "/secure/path/trip-export.json"
+```
+
+See `docs/SUPPORT_DATA_OPS.md` before running export or deletion against any non-test database.
 
 ## Spec Kit Workflow
 
