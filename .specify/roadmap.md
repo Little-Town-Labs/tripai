@@ -77,6 +77,7 @@ Both are constitutional commitments and therefore non-negotiable for launch. The
 **Depends on:** F2, F3
 
 #### F5: Retrieval layer (Google Places + Directions)
+**Status:** Done — implemented as a server-side retrieval library with Google Places/Routes adapters, deterministic cache keys, in-process cache freshness handling, typed provider errors, and fake-provider tests on 2026-06-11.
 **Source:** Arch doc §AI Trip Generation Pipeline Step 2
 **Description:** Server-side wrappers for Google Places (Text Search + Details) and Google Directions. Keys stay server-side (Article IV). Caching for stable results (venue details, route skeletons) per Article VI. This layer is consumed by both initial generation (F6) and revisions (F11).
 **Complexity:** Small

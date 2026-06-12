@@ -6,5 +6,5 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 <!-- SPECKIT START -->
 For active Spec Kit work, read the current roadmap in `.specify/roadmap.md`
-and the active feature plan in `specs/004-intake-form/plan.md`.
+and the active feature plan in `specs/005-retrieval-layer/plan.md`.
 <!-- SPECKIT END -->

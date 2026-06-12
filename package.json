@@ -10,6 +10,7 @@
     "typecheck": "tsc --noEmit",
     "test:e2e": "playwright test",
     "test:intake": "tsx --test --test-concurrency=1 tests/intake/**/*.test.ts",
+    "test:retrieval": "tsx --test --test-concurrency=1 tests/retrieval/**/*.test.ts",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
