@@ -119,6 +119,7 @@ Both are constitutional commitments and therefore non-negotiable for launch. The
 **Depends on:** F7
 
 #### F9: Trip detail view (co-pilot UX)
+**Status:** Done — implemented as `/app/trips/[tripId]` owner-only purchased trip co-pilot view with current/next stop context, persisted route overview, Google Maps/Waze handoffs, park official links, and no live map/Disney dependency on 2026-06-12.
 **Source:** Arch doc §App Routes (`trips/[tripId]`), §Components (`TripMap`, `DaySection`, `StopCard`)
 **Description:** The in-trip experience. Day-by-day itinerary, Leaflet map, stop cards with ETA/distance/next-stop always visible. **Mobile-first** per Article VI. Every stop has one-tap hand-offs to Waze and Google Maps for navigation (Article VII). Park stops link out to the Disney app. Large tappable targets (≥44px), high-contrast typography, glanceable layout. Owner-only view.
 **Complexity:** Large
@@ -336,13 +337,13 @@ F1 (Bootstrap)
 - [x] **F4: Intake form** — `specs/004-intake-form`
 - [x] **F5: Retrieval layer** — `specs/005-retrieval-layer`
 - [x] **F6: AI generation pipeline** — `specs/006-ai-generation-pipeline`
-- [ ] **F7: Plan review & pre-purchase revisions** — `/speckit-specify 7-plan-review`
+- [x] **F7: Plan review & pre-purchase revisions** — `specs/007-plan-review-revisions`
 - [ ] Phase 1 gate: a user can submit intake and see a grounded, streaming, revisable plan
 
 ### Phase 2 — Sell & Own a Trip
 - [ ] Stripe account created
-- [ ] **F8: Stripe checkout & fulfillment** — `/speckit-specify 8-stripe-checkout`
-- [ ] **F9: Trip detail view (co-pilot UX)** — `/speckit-specify 9-trip-detail`
+- [x] **F8: Stripe checkout & fulfillment** — `specs/008-stripe-checkout-fulfillment`
+- [x] **F9: Trip detail view (co-pilot UX)** — `specs/009-trip-detail-copilot`
 - [ ] **F10: Scrapbook (notes, ratings, photos)** — `/speckit-specify 10-scrapbook`
 - [ ] Phase 2 gate: a user can buy a trip and interact with it as an owner
 
@@ -379,4 +380,4 @@ This will produce the F4 intake-form spec and its requirements checklist, then w
 1. **Revision top-up UX:** Article V says "when a revision limit is reached, the UI MUST clearly explain the limit…and offer a purchasable top-up path (design TBD; not a hard requirement for MVP)." Decide whether top-ups are in or out before F11 spec.
 2. **Photo storage limits per trip:** no explicit cap in the arch doc or constitution. Suggest a soft cap (e.g., 200 photos/trip) to be locked during F10 spec.
 3. **Pricing point:** arch doc says "$39–$59" range. Needs to be locked before F8 spec so checkout shows a real number.
-4. **"Coming soon" handoff surface for Disney app live data:** Article VII permits embedding official widgets but MVP scope likely won't include them. Decide at F9 spec whether to ship with "open Disney app" links only or include anything live.
+4. **"Coming soon" handoff surface for Disney app live data:** Decided in F9: ship official park app/web handoff links only. No live Disney data dependency in the family MVP co-pilot route.
