@@ -49,7 +49,7 @@ export function DaySection({
       {day.aiSummary ? <p className="mt-4 leading-7 text-stone-700">{day.aiSummary}</p> : null}
       {scrapbookEnabled ? (
         <>
-          <NoteList title="Day notes" notes={dayNotes} />
+          <NoteList title="Day notes" notes={dayNotes} tripId={tripId} />
           <NoteForm
             tripId={tripId}
             dayId={day.id}

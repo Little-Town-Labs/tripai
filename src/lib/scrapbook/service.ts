@@ -53,6 +53,7 @@ export type ScrapbookNote = {
   tripId: string;
   dayId: string | null;
   stopId: string | null;
+  authorShareLinkId: string | null;
   authorDisplayName: string;
   content: string;
   createdAt: Date;
@@ -62,6 +63,7 @@ export type StopRating = {
   id: string;
   tripId: string;
   stopId: string;
+  authorShareLinkId: string | null;
   authorDisplayName: string | null;
   stars: number;
   text: string | null;
@@ -348,6 +350,7 @@ async function listNotes(client: PoolClient, tripId: string) {
         trip_id as "tripId",
         day_id as "dayId",
         stop_id as "stopId",
+        author_share_link_id as "authorShareLinkId",
         author_display_name as "authorDisplayName",
         content,
         created_at as "createdAt"
@@ -369,6 +372,7 @@ async function listRatings(client: PoolClient, tripId: string) {
         id,
         trip_id as "tripId",
         stop_id as "stopId",
+        author_share_link_id as "authorShareLinkId",
         author_display_name as "authorDisplayName",
         stars,
         text,

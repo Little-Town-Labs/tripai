@@ -1,3 +1,4 @@
+import { removeShareContributionAction } from "@/app/app/trips/[tripId]/actions";
 import type {
   PhotoMetadataSummary,
   ScrapbookNote,
@@ -41,7 +42,7 @@ export function ScrapbookPanel({
 
       {enabled ? (
         <>
-          <NoteList title="Trip notes" notes={detail.scrapbook.tripNotes} />
+          <NoteList title="Trip notes" notes={detail.scrapbook.tripNotes} tripId={detail.trip.id} />
           <NoteForm
             tripId={detail.trip.id}
             label="Add a trip note"
@@ -63,9 +64,11 @@ export function ScrapbookPanel({
 export function NoteList({
   title,
   notes,
+  tripId,
 }: {
   title: string;
   notes: ScrapbookNote[];
+  tripId?: string;
 }) {
   if (notes.length === 0) {
     return null;
@@ -81,6 +84,18 @@ export function NoteList({
             <p className="mt-2 text-xs font-semibold uppercase tracking-[0.12em] text-stone-500">
               {note.authorDisplayName} / {formatDate(note.createdAt.toISOString().slice(0, 10))}
             </p>
+            {tripId && note.authorShareLinkId ? (
+              <form action={removeShareContributionAction.bind(null, tripId)} className="mt-3">
+                <input type="hidden" name="contributionType" value="note" />
+                <input type="hidden" name="contributionId" value={note.id} />
+                <button
+                  type="submit"
+                  className="inline-flex min-h-10 items-center rounded-md border border-red-700 px-3 py-2 text-sm font-semibold text-red-700 transition hover:bg-red-50"
+                >
+                  Remove
+                </button>
+              </form>
+            ) : null}
           </li>
         ))}
       </ol>

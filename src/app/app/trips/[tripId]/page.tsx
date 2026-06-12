@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { TripDetail } from "@/components/trip/trip-detail";
 import { createPool } from "@/db/client";
 import { requireCurrentOwner } from "@/lib/auth/owner";
+import { listShareLinks } from "@/lib/sharing/service";
 import { getTripDetail } from "@/lib/trip-detail/service";
 
 export const dynamic = "force-dynamic";
@@ -36,5 +37,12 @@ export default async function TripDetailPage({
     return <TripDetail detail={null} />;
   }
 
-  return <TripDetail detail={result.detail} />;
+  const shareLinks = await listShareLinks(getAppPool(), owner.id, { tripId });
+
+  return (
+    <TripDetail
+      detail={result.detail}
+      shareLinks={shareLinks.ok ? shareLinks.links : []}
+    />
+  );
 }

@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import type { TripDetail as TripDetailModel } from "@/lib/trip-detail/service";
+import type { ShareLinkSummary } from "@/lib/sharing/service";
 import { isScrapbookEnabled } from "@/lib/scrapbook/config";
 
 import { DaySection } from "./day-section";
@@ -10,10 +11,17 @@ import {
   formatTime,
 } from "./format";
 import { ScrapbookPanel } from "./scrapbook-panel";
+import { SharePanel } from "./share-panel";
 import { TripRouteOverview } from "./trip-route-overview";
 import { RevisionPanel } from "./revision-panel";
 
-export function TripDetail({ detail }: { detail: TripDetailModel | null }) {
+export function TripDetail({
+  detail,
+  shareLinks = [],
+}: {
+  detail: TripDetailModel | null;
+  shareLinks?: ShareLinkSummary[];
+}) {
   if (!detail) {
     return <UnavailableTrip />;
   }
@@ -65,6 +73,7 @@ export function TripDetail({ detail }: { detail: TripDetailModel | null }) {
               ))}
             </div>
             <aside className="space-y-5 lg:sticky lg:top-5 lg:self-start">
+              <SharePanel tripId={detail.trip.id} links={shareLinks} />
               <RevisionPanel tripId={detail.trip.id} panel={detail.revisionPanel} />
               <TripRouteOverview detail={detail} />
               <ScrapbookPanel detail={detail} enabled={scrapbookEnabled} />

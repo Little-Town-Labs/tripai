@@ -153,11 +153,12 @@ Both are constitutional commitments and therefore non-negotiable for launch. The
 **Risk:** The scrapbook-preservation-on-revision logic is non-obvious and needs strong test coverage (Article II § RLS/scrapbook tests).
 
 #### F12: Credential-free family sharing
+**Status:** Done — implemented as opt-in owner share-link management, hash-only token storage, `/share/[token]` account-free itinerary/scrapbook viewing, share-link notes and ratings with display-name attribution, immediate revocation, owner moderation, and focused RLS/service/build validation on 2026-06-12. Photo binary upload remains deferred; shared users see photo metadata/status only.
 **Source:** **Constitution Articles II, VIII** (not in arch doc Phase 1)
 **Description:** The headline feature that wasn't in the arch doc.
 - **Share link generation:** owner clicks "Share with family" → app mints an unguessable token (≥128 bits entropy, crypto-secure RNG, URL-safe), stored hashed when feasible.
 - **Token-scoped access:** RLS policies on `Trip`, `TripDay`, `Stop`, `Note`, `Rating`, `Photo` accept the share token as an alternate auth path. Every policy has a test proving both allow and deny paths.
-- **View + contribute:** family members view the full trip, add photos, notes, ratings. Self-chosen display name ("Grandma").
+- **View + contribute:** family members view the full trip, add notes and ratings. Self-chosen display name ("Grandma"). Photo binary upload remains deferred until object storage is implemented.
 - **Owner moderation:** owner can revoke any link (immediate effect, no cached access) and remove any family contribution.
 - **Privacy:** share links never expose owner email, auth identity, or Stripe identifiers beyond display name. Tokens never appear in analytics URLs.
 - **Opt-in only:** no "share by default" setting (Article VIII).
@@ -351,7 +352,7 @@ F1 (Bootstrap)
 
 ### Phase 3 — Adapt & Share (MVP completion)
 - [x] **F11: Post-purchase & mid-trip revisions** — `specs/011-mid-trip-revisions`
-- [ ] **F12: Credential-free family sharing** — `/speckit-specify 12-family-sharing`
+- [x] **F12: Credential-free family sharing** — `/speckit-specify 12-family-sharing`
 - [ ] 🚀 **MVP launch gate:** all 12 features in production, security review passed
 
 ### Phase 4 — Operational Promises
