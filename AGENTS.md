@@ -6,6 +6,6 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 <!-- SPECKIT START -->
 For active Spec Kit work, read the current roadmap in `.specify/roadmap.md`.
-The active feature plan is `specs/012-family-sharing/plan.md`.
-The latest completed feature plan is `specs/012-family-sharing/plan.md`.
+The active feature plan is `specs/013-export-delete-ops/plan.md`.
+The latest completed feature plan is `specs/013-export-delete-ops/plan.md`.
 <!-- SPECKIT END -->

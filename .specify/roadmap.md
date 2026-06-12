@@ -174,6 +174,7 @@ Both are constitutional commitments and therefore non-negotiable for launch. The
 ### Phase 4 — Operational Promises (post-MVP OK)
 
 #### F13: Data export & deletion (manual ops process)
+**Status:** Done — implemented as internal support-ticket commands and runbook for owner-verified trip JSON export and confirmed permanent trip deletion on 2026-06-12. Export omits raw share tokens and secrets; deletion requires `--confirm <tripId>` and removes the target trip graph while preserving unrelated data.
 **Source:** **Constitution Article I**
 **Description:** Manual support-ticket-driven workflows to honor "you own it forever":
 - **Export:** support staff can produce a portable archive (JSON + photos) of a user's trip on request.
@@ -356,7 +357,7 @@ F1 (Bootstrap)
 - [ ] 🚀 **MVP launch gate:** all 12 features in production, security review passed
 
 ### Phase 4 — Operational Promises
-- [ ] **F13: Data export & deletion ops** — `/speckit-specify 13-export-delete-ops`
+- [x] **F13: Data export & deletion ops** — `/speckit-specify 13-export-delete-ops`
 
 ---
 
