@@ -38,7 +38,7 @@
 
 **Goal**: A signed-in owner can complete all required intake steps and persist a draft tied to their owner record.
 
-**Independent Test**: Sign in, visit `/app/intake`, enter a valid Florida road-trip request, submit, and verify a saved draft/ready state.
+**Independent Test**: Sign in, visit `/app/intake`, enter a valid family road-trip request, submit, and verify a saved draft/ready state.
 
 ### Tests for User Story 1
 

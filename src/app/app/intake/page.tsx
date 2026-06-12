@@ -30,8 +30,8 @@ export default async function IntakePage({
             <p className="text-sm font-semibold uppercase tracking-[0.16em] text-emerald-800">TripAI intake</p>
             <h1 className="mt-2 text-3xl font-semibold">Plan a family road trip</h1>
             <p className="mt-3 max-w-2xl leading-7 text-stone-700">
-              Tell TripAI what kind of Florida road trip you are considering. These are planning preferences, not
-              commitments.
+              Tell TripAI where you are headed, when you are traveling, and what kind of days your family wants. These
+              are planning preferences, not commitments.
             </p>
           </div>
           <Link href="/app" className="rounded-md border border-stone-300 px-4 py-2 text-sm font-semibold">

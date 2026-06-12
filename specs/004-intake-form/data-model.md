@@ -9,7 +9,7 @@ Represents the owner's planning answers before trip generation.
 - `id`: Unique draft identifier generated when saved
 - `ownerId`: Authenticated owner who controls the draft
 - `originAddress`: Starting point for the road trip
-- `destinationArea`: Florida destination area or region
+- `destinationArea`: Destination city, area, or region
 - `startDate`: First travel date
 - `endDate`: Final travel date
 - `partyAdults`: Number of adult travelers

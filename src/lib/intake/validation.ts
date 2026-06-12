@@ -1,9 +1,9 @@
 export const intakeInterests = [
-  "Theme parks",
-  "Beaches",
+  "Scenic stops",
+  "Museums",
   "Nature",
-  "Seafood",
-  "Rainy day ideas",
+  "Local food",
+  "Indoor backup",
   "Low walking",
 ] as const;
 
@@ -134,7 +134,7 @@ export function validateTripIntakeInput(input: IntakeInput): IntakeValidationRes
     errors.originAddress = ["Enter a starting point."];
   }
   if (!destinationArea) {
-    errors.destinationArea = ["Enter a Florida destination area."];
+    errors.destinationArea = ["Enter a destination area."];
   }
   if (!isIsoDate(startDate)) {
     errors.startDate = ["Enter a valid start date."];

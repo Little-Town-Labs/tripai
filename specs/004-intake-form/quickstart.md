@@ -22,7 +22,7 @@
    http://localhost:3000/app/intake
    ```
 
-4. Complete the wizard with a realistic family Florida road-trip request.
+4. Complete the wizard with a realistic family road-trip request.
 
 5. Submit the final step and confirm the page shows the saved draft as ready for trip generation.
 

@@ -31,16 +31,21 @@ export function SignInForm() {
     }
 
     setPending(true);
-    const { error } = await authClient.signIn.email({
-      ...parsed.values,
-      callbackURL: "/app",
-    });
+    try {
+      const { error } = await authClient.signIn.email({
+        ...parsed.values,
+        callbackURL: "/app",
+      });
 
-    setPending(false);
-
-    if (error) {
+      if (error) {
+        setState({ error: getAuthErrorMessage("sign-in", error) });
+        return;
+      }
+    } catch (error) {
       setState({ error: getAuthErrorMessage("sign-in", error) });
       return;
+    } finally {
+      setPending(false);
     }
 
     router.push("/app");

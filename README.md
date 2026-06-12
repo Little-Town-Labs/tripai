@@ -61,6 +61,8 @@ Required local values depend on what you are running:
 - `TRIPAI_SCRAPBOOK_ENABLED=0`: default scrapbook-off state.
 - `TRIPAI_APP_BASE_URL`: optional absolute base URL for newly created family share links; without it, created links are returned as `/share/{token}`.
 
+For deployed owner auth, add the app origin to Neon Auth's branch-level trusted domain allowlist in Console -> Auth -> Configuration -> Domains. The current Vercel production origin is `https://tripai-theta-nine.vercel.app`.
+
 Do not commit real `.env.local` values.
 
 ## Development
