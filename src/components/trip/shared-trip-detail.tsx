@@ -13,6 +13,8 @@ import {
 } from "./format";
 import { SharedNoteForm } from "./shared-note-form";
 import { SharedRatingForm } from "./shared-rating-form";
+import { TripMap } from "./trip-map";
+import { buildTripMapStops } from "./trip-map-model";
 
 export function SharedTripDetail({
   detail,
@@ -57,6 +59,7 @@ export function SharedTripDetail({
               ))}
             </div>
             <aside className="space-y-5 lg:sticky lg:top-5 lg:self-start">
+              <SharedRouteOverview detail={detail} />
               <SharedScrapbookPanel detail={detail} token={token} />
             </aside>
           </div>
@@ -294,6 +297,24 @@ function SharedStopCard({
   );
 }
 
+function SharedRouteOverview({ detail }: { detail: SharedTripDetailModel }) {
+  const stops = detail.days.flatMap((day) => day.stops);
+  const mapStops = buildTripMapStops(detail);
+  const totalMiles = sumNullable(detail.days.map((day) => day.totalMiles));
+  const totalDriveTime = sumNullable(detail.days.map((day) => day.driveTimeMinutes));
+
+  return (
+    <section className="rounded-md border border-stone-300 bg-white p-4 shadow-sm">
+      <h2 className="text-xl font-semibold">Route overview</h2>
+      <p className="mt-2 text-sm leading-6 text-stone-700">
+        {formatRouteFacts(totalMiles, totalDriveTime)} across {detail.days.length} day
+        {detail.days.length === 1 ? "" : "s"} and {stops.length} stop{stops.length === 1 ? "" : "s"}.
+      </p>
+      <TripMap stops={mapStops} />
+    </section>
+  );
+}
+
 function SharedScrapbookPanel({
   detail,
   token,
@@ -426,4 +447,12 @@ function SummaryStat({ label, value }: { label: string; value: number }) {
 
 function countGrouped<T>(groups: Record<string, T[]>) {
   return Object.values(groups).reduce((sum, items) => sum + items.length, 0);
+}
+
+function sumNullable(values: Array<number | null>) {
+  const present = values.filter((value): value is number => value !== null);
+  if (present.length === 0) {
+    return null;
+  }
+  return present.reduce((sum, value) => sum + value, 0);
 }
