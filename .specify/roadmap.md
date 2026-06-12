@@ -86,11 +86,12 @@ Both are constitutional commitments and therefore non-negotiable for launch. The
 **Can run in parallel with:** F4
 
 #### F6: AI generation pipeline (planner + validator + narrator)
+**Status:** Done — implemented as a provider-agnostic server-side generation pipeline with OpenRouter `google/gemma-4-26b-a4b-it` request mapping, strict retrieval grounding validation, max-2 planner retry behavior, advisory narration checks, progress events, and fake-provider tests on 2026-06-11.
 **Source:** Arch doc §AI Trip Generation Pipeline Steps 3–5
 **Description:** The heart of the product.
-- **Planner:** Claude Opus 4.6, streaming, structured JSON output, system prompt enforces grounding (Article III).
+- **Planner:** OpenRouter using `google/gemma-4-26b-a4b-it`, structured JSON output, system prompt enforces grounding (Article III).
 - **Validator:** programmatic checks — every stop has a verified `google_place_id`, no closed venues, drive times plausible, required stop types present. Retry loop max 2 attempts per Article III.
-- **Narrator:** Claude Sonnet 4.6 generates titles, summaries, per-day narratives, per-stop descriptions.
+- **Narrator:** OpenRouter using `google/gemma-4-26b-a4b-it` generates titles, summaries, per-day narratives, per-stop descriptions.
 - **Voice constraint:** all prompts enforce advisory language per Article IV ("Consider…", never "You must…").
 - **Streaming UX hooks** emit human-readable progress events per Article VI (<2s to first visible progress).
 **Complexity:** Large
@@ -330,9 +331,9 @@ F1 (Bootstrap)
 - [x] Phase 0 gate: authenticated user can sign up / log in; empty DB with RLS verified
 
 ### Phase 1 — Generate a Trip
-- [ ] **F4: Intake form** — `/speckit-specify 4-intake-form`
-- [ ] **F5: Retrieval layer** — `/speckit-specify 5-retrieval-layer`
-- [ ] **F6: AI generation pipeline** — `/speckit-specify 6-ai-generation-pipeline`
+- [x] **F4: Intake form** — `specs/004-intake-form`
+- [x] **F5: Retrieval layer** — `specs/005-retrieval-layer`
+- [x] **F6: AI generation pipeline** — `specs/006-ai-generation-pipeline`
 - [ ] **F7: Plan review & pre-purchase revisions** — `/speckit-specify 7-plan-review`
 - [ ] Phase 1 gate: a user can submit intake and see a grounded, streaming, revisable plan
 
