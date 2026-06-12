@@ -11,6 +11,7 @@ import {
 } from "./format";
 import { ScrapbookPanel } from "./scrapbook-panel";
 import { TripRouteOverview } from "./trip-route-overview";
+import { RevisionPanel } from "./revision-panel";
 
 export function TripDetail({ detail }: { detail: TripDetailModel | null }) {
   if (!detail) {
@@ -64,6 +65,7 @@ export function TripDetail({ detail }: { detail: TripDetailModel | null }) {
               ))}
             </div>
             <aside className="space-y-5 lg:sticky lg:top-5 lg:self-start">
+              <RevisionPanel tripId={detail.trip.id} panel={detail.revisionPanel} />
               <TripRouteOverview detail={detail} />
               <ScrapbookPanel detail={detail} enabled={scrapbookEnabled} />
             </aside>

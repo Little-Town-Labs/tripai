@@ -18,8 +18,9 @@ Implemented roadmap features:
 - F8 Checkout and fulfillment: disabled-by-default Stripe checkout path, one-time Checkout session creation, raw-body webhook verification, webhook-only purchase fulfillment.
 - F9 Trip detail co-pilot: owner-only purchased trip view, active day/current-next stop context, persisted route overview, Google Maps/Waze handoffs, park official links.
 - F10 Scrapbook notes and ratings: disabled-by-default owner scrapbook surface, durable trip/day/stop notes, stop ratings, photo-storage placeholder.
+- F11 Post-purchase and mid-trip revisions: owner revision counts, visited-stop marking, draft candidate controls, preservation-required commits for removed scrapbook content, previous-version restore.
 
-Next roadmap feature: F11 Post-purchase and mid-trip revisions.
+Next roadmap feature: F12 Credential-free family sharing.
 
 ## Important Boundaries
 
@@ -27,6 +28,7 @@ Next roadmap feature: F11 Post-purchase and mid-trip revisions.
 - Scrapbook UI/actions are implemented but disabled by default with `TRIPAI_SCRAPBOOK_ENABLED=0`.
 - Photo/object upload storage remains deferred; F10 does not accept binary uploads or show fake uploaded state.
 - Share-link family access exists in the data/RLS foundation but the user-facing sharing feature is F12.
+- F11 revision generation currently uses a conservative verified-route candidate seam in the app action path; provider-backed replanning can replace that generator without changing quota, commit, preservation, or restore rules.
 - Checkout success redirects do not mark trips purchased; only verified Stripe webhooks do.
 - Trip detail uses persisted route/place data and outbound navigation links; it does not implement turn-by-turn navigation, live map tiles, or live Disney data.
 - Automated provider tests use fakes. Live Google, OpenRouter, and Stripe calls are manual/credential-gated.
@@ -100,6 +102,7 @@ npm run test:plan-review
 npm run test:checkout
 npm run test:trip-detail
 npm run test:scrapbook
+npm run test:revisions
 npm run test:e2e
 ```
 

@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { after, before, test } from "node:test";
 import type { Pool } from "pg";
 
+import { markStopVisited } from "../../src/lib/revisions/service";
 import { getTripDetail } from "../../src/lib/trip-detail/service";
 import { createTestPool, resetAndMigrate } from "../db/helpers/database";
 import {
@@ -47,10 +48,34 @@ test("US1 loads a purchased owner trip with ordered days and current/next stop c
   assert.equal(result.detail.days[0].stops[0].checked, true);
   assert.equal(result.detail.days[0].stops[1].isCurrent, true);
   assert.equal(result.detail.days[0].stops[1].nextStopName, "Magic Kingdom Park");
+  assert.equal(result.detail.revisionPanel.planningRemaining, 2);
+  assert.equal(result.detail.revisionPanel.midTripRemaining, 3);
+  assert.equal(result.detail.revisionPanel.canRequestPlanning, false);
+  assert.equal(result.detail.revisionPanel.canRequestMidTrip, true);
   assert.equal(
     result.detail.days[0].stops[2].officialParkUrl,
     "https://disneyworld.disney.go.com/",
   );
+});
+
+test("F11 exposes revision panel counts and checked stop state after visited updates", async () => {
+  const marked = await markStopVisited(pool, ownerAId, {
+    tripId: tripAId,
+    stopId: "30000000-0000-4000-8000-000000000002",
+    checked: true,
+  });
+  assert.equal(marked.ok, true);
+
+  const result = await getTripDetail(pool, ownerAId, {
+    tripId: tripAId,
+    today: new Date("2026-07-01T12:00:00Z"),
+  });
+
+  assert.equal(result.ok, true);
+  assert.equal(result.detail.revisionPanel.currentRevisionId, revisionAId);
+  assert.equal(result.detail.revisionPanel.planningRemaining, 2);
+  assert.equal(result.detail.revisionPanel.midTripRemaining, 3);
+  assert.equal(result.detail.days[0].stops[1].checked, true);
 });
 
 test("US4 denies another owner through owner-scoped access", async () => {

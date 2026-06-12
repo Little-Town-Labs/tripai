@@ -1,4 +1,4 @@
-import type { Pool } from "pg";
+import type { Pool, PoolClient } from "pg";
 
 export type TripRevisionSummary = {
   id: string;
@@ -14,7 +14,9 @@ export type StopContribution = {
   stableStopKey: string;
 };
 
-export async function getCurrentRevision(pool: Pool, tripId: string) {
+type Queryable = Pool | PoolClient;
+
+export async function getCurrentRevision(pool: Queryable, tripId: string) {
   const { rows } = await pool.query<TripRevisionSummary>(
     `
       select
@@ -34,7 +36,7 @@ export async function getCurrentRevision(pool: Pool, tripId: string) {
 }
 
 export async function listRetainedStopContributions(
-  pool: Pool,
+  pool: Queryable,
   tripId: string,
   retainedStableStopKeys: string[],
 ) {
@@ -42,7 +44,7 @@ export async function listRetainedStopContributions(
 }
 
 export async function findRemovedStopContributions(
-  pool: Pool,
+  pool: Queryable,
   tripId: string,
   retainedStableStopKeys: string[],
 ) {
@@ -50,7 +52,7 @@ export async function findRemovedStopContributions(
 }
 
 async function listStopContributions(
-  pool: Pool,
+  pool: Queryable,
   tripId: string,
   stableStopKeys: string[],
   includeMatching: boolean,
