@@ -41,7 +41,7 @@ Both are constitutional commitments and therefore non-negotiable for launch. The
 #### F1: Platform bootstrap
 **Status:** Done — validated against Neon project `tripai` on 2026-06-11.
 **Source:** Arch doc §Tech Stack, §Environment Variables
-**Description:** Neon Postgres project, Neon Auth configuration, env vars, Next.js 16 App Router baseline (read `node_modules/next/dist/docs/` before touching Next 16 APIs per `AGENTS.md`), Drizzle setup, Tailwind v4, CI skeleton (lint + typecheck + test runner), Vercel project link, and Neon CLI/MCP setup per `docs/NEON.md`. Photo bucket/object storage selection is deferred until F10.
+**Description:** Neon Postgres project, Neon Auth configuration, env vars, Next.js 16 App Router baseline (read `node_modules/next/dist/docs/` before touching Next 16 APIs per `AGENTS.md`), Drizzle setup, Tailwind v4, CI skeleton (lint + typecheck + test runner), Vercel project link, and Neon CLI/MCP setup per `docs/NEON.md`. Photo bucket/object storage selection remains deferred after the F10 notes/ratings slice.
 **Complexity:** Small
 **Priority:** P0
 **Blocks:** Everything
@@ -127,6 +127,7 @@ Both are constitutional commitments and therefore non-negotiable for launch. The
 **Depends on:** F8
 
 #### F10: Scrapbook (notes, ratings, photos)
+**Status:** Done — implemented as a disabled-by-default `TRIPAI_SCRAPBOOK_ENABLED` owner scrapbook surface with durable trip/day/stop notes, stop ratings, first-class trip detail integration, photo metadata/status display, and an explicit no-fake-upload placeholder while object storage remains deferred on 2026-06-12.
 **Source:** Arch doc §Data Model (`Note`, `Rating`, `Photo`), §App Routes (`api/trips/[tripId]/notes|ratings|photos`)
 **Description:** Per-stop, per-day, per-trip notes and ratings (1–5 stars + text). Photo upload with client-side resize/compress, stored in S3-compatible object storage with access authorized through the app/database policy. **First-class in the UI** (not buried behind a "more" menu) per Article IX. Durable writes: no "uploaded" confirmation until storage confirms (Article X). Survives revisions per F11.
 **Complexity:** Medium
@@ -344,7 +345,7 @@ F1 (Bootstrap)
 - [ ] Stripe account created
 - [x] **F8: Stripe checkout & fulfillment** — `specs/008-stripe-checkout-fulfillment`
 - [x] **F9: Trip detail view (co-pilot UX)** — `specs/009-trip-detail-copilot`
-- [ ] **F10: Scrapbook (notes, ratings, photos)** — `/speckit-specify 10-scrapbook`
+- [x] **F10: Scrapbook (notes, ratings, photos)** — `specs/010-scrapbook`
 - [ ] Phase 2 gate: a user can buy a trip and interact with it as an owner
 
 ### Phase 3 — Adapt & Share (MVP completion)
@@ -378,6 +379,6 @@ This will produce the F4 intake-form spec and its requirements checklist, then w
 ## Open Questions to Resolve Before MVP Launch
 
 1. **Revision top-up UX:** Article V says "when a revision limit is reached, the UI MUST clearly explain the limit…and offer a purchasable top-up path (design TBD; not a hard requirement for MVP)." Decide whether top-ups are in or out before F11 spec.
-2. **Photo storage limits per trip:** no explicit cap in the arch doc or constitution. Suggest a soft cap (e.g., 200 photos/trip) to be locked during F10 spec.
+2. **Photo storage limits per trip:** no explicit cap in the arch doc or constitution. F10 deferred binary photo upload and object storage; lock this during the later photo-storage slice.
 3. **Pricing point:** arch doc says "$39–$59" range. Needs to be locked before F8 spec so checkout shows a real number.
 4. **"Coming soon" handoff surface for Disney app live data:** Decided in F9: ship official park app/web handoff links only. No live Disney data dependency in the family MVP co-pilot route.
