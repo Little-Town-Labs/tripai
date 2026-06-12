@@ -1,6 +1,10 @@
 import type { Pool, PoolClient } from "pg";
 
 import { setAppRole, setOwnerContext } from "@/lib/access/context";
+import {
+  listScrapbookForTrip,
+  type ScrapbookSummary,
+} from "@/lib/scrapbook/service";
 
 import {
   buildNavigationLinks,
@@ -31,6 +35,7 @@ export type TripDetail = {
   currentStopId: string | null;
   nextStopId: string | null;
   status: "ready" | "not_ready";
+  scrapbook: ScrapbookSummary;
 };
 
 export type TripDetailRevision = {
@@ -130,6 +135,7 @@ export async function getTripDetail(
       ? await listDaysWithStops(client, trip.id, selectedRevision.id)
       : [];
     const shaped = shapeDays(rawDays, input.today ?? new Date());
+    const scrapbook = await listScrapbookForTrip(client, trip.id);
 
     await client.query("commit");
 
@@ -149,6 +155,7 @@ export async function getTripDetail(
         currentStopId: shaped.currentStopId,
         nextStopId: shaped.nextStopId,
         status: selectedRevision && shaped.days.length > 0 ? "ready" : "not_ready",
+        scrapbook,
       },
     };
   } catch (error) {

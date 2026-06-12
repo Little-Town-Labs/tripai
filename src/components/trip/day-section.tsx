@@ -1,12 +1,28 @@
+import type { ScrapbookSummary } from "@/lib/scrapbook/service";
 import type { TripDetailDay } from "@/lib/trip-detail/service";
 
 import {
   formatDate,
   formatRouteFacts,
 } from "./format";
+import { NoteForm } from "./note-form";
+import { NoteList } from "./scrapbook-panel";
 import { StopCard } from "./stop-card";
 
-export function DaySection({ day }: { day: TripDetailDay }) {
+export function DaySection({
+  tripId,
+  day,
+  scrapbook,
+  scrapbookEnabled,
+}: {
+  tripId: string;
+  day: TripDetailDay;
+  scrapbook: ScrapbookSummary;
+  scrapbookEnabled: boolean;
+}) {
+  const dayNotes = scrapbook.notesByDayId[day.id] ?? [];
+  const dayPhotos = scrapbook.photosByDayId[day.id] ?? [];
+
   return (
     <section
       className={
@@ -31,11 +47,36 @@ export function DaySection({ day }: { day: TripDetailDay }) {
         </p>
       ) : null}
       {day.aiSummary ? <p className="mt-4 leading-7 text-stone-700">{day.aiSummary}</p> : null}
+      {scrapbookEnabled ? (
+        <>
+          <NoteList title="Day notes" notes={dayNotes} />
+          <NoteForm
+            tripId={tripId}
+            dayId={day.id}
+            label="Add a day note"
+            placeholder="What should your family remember about this day?"
+            disabled={!scrapbookEnabled}
+          />
+        </>
+      ) : null}
+      {dayPhotos.length > 0 ? (
+        <p className="mt-4 rounded-md border border-stone-200 bg-stone-50 p-3 text-sm text-stone-700">
+          {dayPhotos.length} photo metadata item{dayPhotos.length === 1 ? "" : "s"} waiting for storage support.
+        </p>
+      ) : null}
       {day.stops.length > 0 ? (
         <ol className="mt-5 space-y-4">
           {day.stops.map((stop) => (
             <li key={stop.id}>
-              <StopCard stop={stop} />
+              <StopCard
+                tripId={tripId}
+                stop={stop}
+                notes={scrapbook.notesByStopId[stop.id] ?? []}
+                ratings={scrapbook.ratingsByStopId[stop.id] ?? []}
+                ratingSummary={scrapbook.ratingSummariesByStopId[stop.id] ?? null}
+                photos={scrapbook.photosByStopId[stop.id] ?? []}
+                scrapbookEnabled={scrapbookEnabled}
+              />
             </li>
           ))}
         </ol>

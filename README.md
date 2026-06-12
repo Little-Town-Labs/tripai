@@ -17,13 +17,15 @@ Implemented roadmap features:
 - F7 Plan review: owner-only plan page, itinerary display, progress-ready state, pre-purchase revision requests, version browsing.
 - F8 Checkout and fulfillment: disabled-by-default Stripe checkout path, one-time Checkout session creation, raw-body webhook verification, webhook-only purchase fulfillment.
 - F9 Trip detail co-pilot: owner-only purchased trip view, active day/current-next stop context, persisted route overview, Google Maps/Waze handoffs, park official links.
+- F10 Scrapbook notes and ratings: disabled-by-default owner scrapbook surface, durable trip/day/stop notes, stop ratings, photo-storage placeholder.
 
-Next roadmap feature: F10 Scrapbook notes, ratings, and photos.
+Next roadmap feature: F11 Post-purchase and mid-trip revisions.
 
 ## Important Boundaries
 
 - Stripe is implemented but disabled by default with `TRIPAI_STRIPE_ENABLED=0`.
-- Photo/object storage is deferred until F10.
+- Scrapbook UI/actions are implemented but disabled by default with `TRIPAI_SCRAPBOOK_ENABLED=0`.
+- Photo/object upload storage remains deferred; F10 does not accept binary uploads or show fake uploaded state.
 - Share-link family access exists in the data/RLS foundation but the user-facing sharing feature is F12.
 - Checkout success redirects do not mark trips purchased; only verified Stripe webhooks do.
 - Trip detail uses persisted route/place data and outbound navigation links; it does not implement turn-by-turn navigation, live map tiles, or live Disney data.
@@ -51,6 +53,7 @@ Required local values depend on what you are running:
 - `OPENROUTER_API_KEY`: live AI generation smoke only.
 - `GOOGLE_MAPS_API_KEY`: live retrieval smoke only.
 - `TRIPAI_STRIPE_ENABLED=0`: default checkout-off state.
+- `TRIPAI_SCRAPBOOK_ENABLED=0`: default scrapbook-off state.
 
 Do not commit real `.env.local` values.
 
@@ -96,6 +99,7 @@ npm run test:generation
 npm run test:plan-review
 npm run test:checkout
 npm run test:trip-detail
+npm run test:scrapbook
 npm run test:e2e
 ```
 

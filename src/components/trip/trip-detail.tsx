@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import type { TripDetail as TripDetailModel } from "@/lib/trip-detail/service";
+import { isScrapbookEnabled } from "@/lib/scrapbook/config";
 
 import { DaySection } from "./day-section";
 import {
@@ -8,6 +9,7 @@ import {
   formatRouteFacts,
   formatTime,
 } from "./format";
+import { ScrapbookPanel } from "./scrapbook-panel";
 import { TripRouteOverview } from "./trip-route-overview";
 
 export function TripDetail({ detail }: { detail: TripDetailModel | null }) {
@@ -18,6 +20,7 @@ export function TripDetail({ detail }: { detail: TripDetailModel | null }) {
   const activeDay = detail.days.find((day) => day.id === detail.activeDayId) ?? null;
   const currentStop = activeDay?.stops.find((stop) => stop.id === detail.currentStopId) ?? null;
   const nextStop = activeDay?.stops.find((stop) => stop.id === detail.nextStopId) ?? null;
+  const scrapbookEnabled = isScrapbookEnabled();
 
   return (
     <main className="min-h-screen bg-[#f7f4ee] px-4 py-5 text-stone-950 sm:px-6 sm:py-8">
@@ -51,11 +54,18 @@ export function TripDetail({ detail }: { detail: TripDetailModel | null }) {
                 nextStop={nextStop}
               />
               {detail.days.map((day) => (
-                <DaySection key={day.id} day={day} />
+                <DaySection
+                  key={day.id}
+                  tripId={detail.trip.id}
+                  day={day}
+                  scrapbook={detail.scrapbook}
+                  scrapbookEnabled={scrapbookEnabled}
+                />
               ))}
             </div>
             <aside className="space-y-5 lg:sticky lg:top-5 lg:self-start">
               <TripRouteOverview detail={detail} />
+              <ScrapbookPanel detail={detail} enabled={scrapbookEnabled} />
             </aside>
           </div>
         ) : (

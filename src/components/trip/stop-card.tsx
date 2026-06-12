@@ -1,8 +1,36 @@
+import type {
+  PhotoMetadataSummary,
+  ScrapbookNote,
+  StopRating,
+  StopRatingSummary,
+} from "@/lib/scrapbook/service";
 import type { TripDetailStop } from "@/lib/trip-detail/service";
 
 import { formatTime } from "./format";
+import { NoteForm } from "./note-form";
+import { RatingForm } from "./rating-form";
+import {
+  NoteList,
+  PhotoStatus,
+} from "./scrapbook-panel";
 
-export function StopCard({ stop }: { stop: TripDetailStop }) {
+export function StopCard({
+  tripId,
+  stop,
+  notes,
+  ratings,
+  ratingSummary,
+  photos,
+  scrapbookEnabled,
+}: {
+  tripId: string;
+  stop: TripDetailStop;
+  notes: ScrapbookNote[];
+  ratings: StopRating[];
+  ratingSummary: StopRatingSummary | null;
+  photos: PhotoMetadataSummary[];
+  scrapbookEnabled: boolean;
+}) {
   return (
     <article
       className={
@@ -35,6 +63,9 @@ export function StopCard({ stop }: { stop: TripDetailStop }) {
         {stop.googleRating ? <Fact label="Google rating" value={`${stop.googleRating.toFixed(1)} / 5`} /> : null}
         {stop.priceLevel ? <Fact label="Price level" value={"$".repeat(stop.priceLevel)} /> : null}
         {stop.nextStopName ? <Fact label="Next" value={stop.nextStopName} /> : null}
+        {ratingSummary ? (
+          <Fact label="Family rating" value={`${ratingSummary.average.toFixed(1)} / 5 from ${ratingSummary.count}`} />
+        ) : null}
       </dl>
 
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
@@ -65,6 +96,31 @@ export function StopCard({ stop }: { stop: TripDetailStop }) {
           </a>
         ) : null}
       </div>
+      {scrapbookEnabled ? (
+        <section className="mt-4 border-t border-stone-200 pt-4">
+          <h4 className="text-base font-semibold text-stone-950">Stop scrapbook</h4>
+          <NoteList title="Stop notes" notes={notes} />
+          {ratings.length > 0 ? (
+            <ol className="mt-3 space-y-2">
+              {ratings.map((rating) => (
+                <li key={rating.id} className="rounded-md border border-stone-200 bg-white p-3">
+                  <p className="text-sm font-semibold text-stone-900">{rating.stars} / 5 stars</p>
+                  {rating.text ? <p className="mt-1 text-sm leading-6 text-stone-700">{rating.text}</p> : null}
+                </li>
+              ))}
+            </ol>
+          ) : null}
+          <NoteForm
+            tripId={tripId}
+            stopId={stop.id}
+            label="Add a stop note"
+            placeholder="Capture what happened at this stop."
+            disabled={!scrapbookEnabled}
+          />
+          <RatingForm tripId={tripId} stopId={stop.id} disabled={!scrapbookEnabled} />
+          {photos.length > 0 ? <PhotoStatus photos={photos} enabled={scrapbookEnabled} /> : null}
+        </section>
+      ) : null}
     </article>
   );
 }
