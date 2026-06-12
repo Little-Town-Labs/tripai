@@ -84,9 +84,44 @@ test("maps Google route responses into route skeletons", async () => {
   assert.equal(route?.segments[0]?.distanceMeters, 804672);
 });
 
+test("uses split Google Places env key when a unified Maps key is not configured", async () => {
+  const previousMapsKey = process.env.GOOGLE_MAPS_API_KEY;
+  const previousPlacesKey = process.env.GOOGLE_PLACES_API_KEY;
+  const previousDirectionsKey = process.env.GOOGLE_DIRECTIONS_API_KEY;
+  delete process.env.GOOGLE_MAPS_API_KEY;
+  process.env.GOOGLE_PLACES_API_KEY = "places-key";
+  process.env.GOOGLE_DIRECTIONS_API_KEY = "directions-key";
+
+  try {
+    const calls: Array<{ init?: RequestInit }> = [];
+    const provider = new GoogleMapsProvider({
+      fetch: async (_url, init) => {
+        calls.push({ init });
+        return jsonResponse({ places: [] });
+      },
+    });
+
+    await provider.searchText({ textQuery: "Orlando family restaurants", category: "restaurant" });
+
+    assert.equal((calls[0]?.init?.headers as Headers).get("X-Goog-Api-Key"), "places-key");
+  } finally {
+    restoreEnv("GOOGLE_MAPS_API_KEY", previousMapsKey);
+    restoreEnv("GOOGLE_PLACES_API_KEY", previousPlacesKey);
+    restoreEnv("GOOGLE_DIRECTIONS_API_KEY", previousDirectionsKey);
+  }
+});
+
 function jsonResponse(body: unknown) {
   return new Response(JSON.stringify(body), {
     status: 200,
     headers: { "content-type": "application/json" },
   });
+}
+
+function restoreEnv(name: string, value: string | undefined) {
+  if (value === undefined) {
+    delete process.env[name];
+    return;
+  }
+  process.env[name] = value;
 }

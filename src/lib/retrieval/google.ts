@@ -62,7 +62,12 @@ export class GoogleMapsProvider implements PlaceProvider, RouteProvider {
   private readonly now: () => Date;
 
   constructor(options: GoogleMapsProviderOptions = {}) {
-    this.apiKey = options.apiKey ?? process.env.GOOGLE_MAPS_API_KEY ?? "";
+    this.apiKey =
+      options.apiKey ??
+      process.env.GOOGLE_MAPS_API_KEY ??
+      process.env.GOOGLE_PLACES_API_KEY ??
+      process.env.GOOGLE_DIRECTIONS_API_KEY ??
+      "";
     this.fetchImpl = options.fetch ?? fetch;
     this.now = options.now ?? (() => new Date());
   }

@@ -56,7 +56,7 @@ Required local values depend on what you are running:
 - `DATABASE_TEST_URL`: Neon testing branch for DB-backed tests.
 - `NEON_AUTH_BASE_URL` and `NEON_AUTH_COOKIE_SECRET`: owner auth.
 - `OPENROUTER_API_KEY`: live AI generation smoke only.
-- `GOOGLE_MAPS_API_KEY`: live retrieval smoke only.
+- `GOOGLE_MAPS_API_KEY`: live retrieval smoke only. `GOOGLE_PLACES_API_KEY` or `GOOGLE_DIRECTIONS_API_KEY` is accepted as a fallback when a split key setup already exists.
 - `TRIPAI_STRIPE_ENABLED=0`: default checkout-off state.
 - `TRIPAI_SCRAPBOOK_ENABLED=0`: default scrapbook-off state.
 - `TRIPAI_APP_BASE_URL`: optional absolute base URL for newly created family share links; without it, created links are returned as `/share/{token}`.
