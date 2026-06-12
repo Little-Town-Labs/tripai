@@ -22,7 +22,15 @@ Implemented roadmap features:
 - F12 Credential-free family sharing: owner-created hash-only share links, `/share/[token]` account-free trip view with the same lightweight stop map, family notes/ratings with display names, immediate revocation, and owner moderation.
 - F13 Data export and deletion ops: internal support commands and runbook for owner-verified trip export and permanent trip deletion.
 
-MVP roadmap implementation is complete through F13; remaining launch work is production/security review and external account gates.
+MVP roadmap implementation is complete through F13; remaining launch work is production/security review, Google provider/key decisions, and trip-specific data entry for the current family trip.
+
+Current production URL:
+
+```text
+https://tripai-theta-nine.vercel.app
+```
+
+The production app was manually deployed after PR #16 to pick up generic intake wording and safer auth error handling.
 
 ## Important Boundaries
 
@@ -35,6 +43,8 @@ MVP roadmap implementation is complete through F13; remaining launch work is pro
 - Trip detail uses persisted route/place data, lightweight OpenStreetMap tiles for stop display, and outbound navigation links; it does not implement turn-by-turn navigation or live Disney data.
 - Automated provider tests use fakes. Live Google, OpenRouter, and Stripe calls are manual/credential-gated.
 - Data export/deletion is internal only. Use `docs/SUPPORT_DATA_OPS.md` and never print or commit database URLs, raw share tokens, or exported archives.
+- The intake form is intentionally generic; do not reintroduce Florida-specific labels or options unless a dedicated destination-specific mode is added.
+- Owner auth users live in Neon Auth tables. `public.owners` rows are app records created after successful auth and do not create email/password credentials.
 
 ## Local Setup
 
@@ -62,6 +72,13 @@ Required local values depend on what you are running:
 - `TRIPAI_APP_BASE_URL`: optional absolute base URL for newly created family share links; without it, created links are returned as `/share/{token}`.
 
 For deployed owner auth, add the app origin to Neon Auth's branch-level trusted domain allowlist in Console -> Auth -> Configuration -> Domains. The current Vercel production origin is `https://tripai-theta-nine.vercel.app`.
+
+If signup fails with `User already exists` after deleting rows from app tables, the matching Neon Auth user still exists. Reset both sides before retrying:
+
+- Neon Auth user: `neon_auth."user"` plus related `neon_auth.account`, `neon_auth.session`, and temporary verification rows, preferably through Neon Console Auth user management.
+- TripAI app owner: `public.owners` and dependent app data as appropriate for the reset.
+
+Deleting only from `public.owners` is not enough to reset email/password login.
 
 Do not commit real `.env.local` values.
 
@@ -124,6 +141,22 @@ npm run ops:trip-data -- export --database-url "$DATABASE_URL" --owner-id "<OWNE
 ```
 
 See `docs/SUPPORT_DATA_OPS.md` before running export or deletion against any non-test database.
+
+## Production Handoff
+
+Last known handoff state after PR #16:
+
+- `main` was synced to merge commit `161b921e61bc76e0adab0d7e84fbe7ddc4e45009`.
+- Working tree was clean.
+- No open PRs were reported by `gh`.
+- Production alias `https://tripai-theta-nine.vercel.app` pointed at the latest Vercel deployment.
+- Owner signup/sign-in was working after adding the Vercel origin to the Neon Auth trusted domain allowlist and resetting the stale auth user/app owner record.
+
+Useful next actions for resuming the MVP:
+
+- Enter or import the real trip route, stops, destination, and dates.
+- Decide whether to use the existing Google retrieval layer, a free/manual seed for this trip, or OpenStreetMap/free sources for coordinates.
+- Keep Stripe and scrapbook toggles off unless deliberately testing those flows.
 
 ## Spec Kit Workflow
 
