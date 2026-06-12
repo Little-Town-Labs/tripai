@@ -153,7 +153,7 @@ export function IntakeWizard() {
           onChange={(value) => update("originAddress", value)}
         />
         <TextField
-          label="Florida destination"
+          label="Destination area"
           name="destinationArea"
           value={values.destinationArea}
           error={errors.destinationArea}

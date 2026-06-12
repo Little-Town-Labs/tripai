@@ -16,7 +16,7 @@ As the signed-in trip owner, I need a simple step-by-step intake flow so I can d
 
 **Why this priority**: F4 is the first product workflow after authentication. It creates the trip planning input required by retrieval and AI generation while keeping the experience approachable for a busy parent.
 
-**Independent Test**: Can be fully tested by signing in, opening the intake flow, completing all required steps with a Florida road-trip request, submitting it, and proving a draft intake is saved for the owner.
+**Independent Test**: Can be fully tested by signing in, opening the intake flow, completing all required steps with a family road-trip request, submitting it, and proving a draft intake is saved for the owner.
 
 **Acceptance Scenarios**:
 
@@ -60,7 +60,7 @@ As a parent planning from either a phone or laptop, I need the intake flow to be
 
 - The trip date range cannot be empty, reversed, or unreasonably long for an MVP road-trip plan.
 - Party composition must allow adults and children to be represented clearly, including children's ages when children are included.
-- Interest selections must allow common Florida family priorities while still accepting free-form constraints.
+- Interest selections must allow common family road-trip priorities while still accepting free-form constraints.
 - Budget must be captured as a planning preference, not a payment or checkout commitment.
 - Dietary, mobility, pacing, and other constraints may be optional but must not be lost when entered.
 - A signed-out visitor who reaches the owner intake route must be sent to sign in without losing the intent to start planning.

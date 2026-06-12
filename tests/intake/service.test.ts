@@ -26,13 +26,13 @@ test("US1 persists a trip intake draft through owner-scoped RLS context", async 
 
   const draft = await createTripIntakeDraft(pool, owner.id, {
     originAddress: "St. Louis, MO",
-    destinationArea: "Orlando, FL",
+    destinationArea: "Chicago, IL",
     startDate: "2026-07-06",
     endDate: "2026-07-11",
     partyAdults: 2,
     partyChildren: 2,
     childrenAges: [6, 9],
-    interests: ["Theme parks", "Seafood"],
+    interests: ["Scenic stops", "Local food"],
     budgetLevel: "moderate",
     dietaryNeeds: ["Peanut allergy"],
     mobilityNotes: "Prefer stroller-friendly days",
@@ -53,7 +53,7 @@ test("US1 persists a trip intake draft through owner-scoped RLS context", async 
     await client.query("commit");
 
     assert.equal(ownerRows.rows[0]?.owner_id, owner.id);
-    assert.equal(ownerRows.rows[0]?.destination_area, "Orlando, FL");
+    assert.equal(ownerRows.rows[0]?.destination_area, "Chicago, IL");
   } catch (error) {
     await client.query("rollback");
     throw error;

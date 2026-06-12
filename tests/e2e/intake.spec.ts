@@ -6,7 +6,7 @@ test("US1 signed-in owner can complete the intake wizard", async ({ page }) => {
   await expect(page.getByRole("heading", { name: "Plan a family road trip" })).toBeVisible();
 
   await page.getByLabel("Starting point").fill("St. Louis, MO");
-  await page.getByLabel("Florida destination").fill("Orlando, FL");
+  await page.getByLabel("Destination area").fill("Chicago, IL");
   await page.getByRole("button", { name: "Next", exact: true }).click();
 
   await page.getByLabel("Start date").fill("2026-07-06");
@@ -18,8 +18,8 @@ test("US1 signed-in owner can complete the intake wizard", async ({ page }) => {
   await page.getByLabel("Children's ages").fill("6, 9");
   await page.getByRole("button", { name: "Next", exact: true }).click();
 
-  await page.getByRole("checkbox", { name: "Theme parks" }).check();
-  await page.getByRole("checkbox", { name: "Seafood" }).check();
+  await page.getByRole("checkbox", { name: "Scenic stops" }).check();
+  await page.getByRole("checkbox", { name: "Local food" }).check();
   await page.getByLabel("Budget preference").selectOption("moderate");
   await page.getByLabel("Travel pace").selectOption("balanced");
   await page.getByRole("button", { name: "Next", exact: true }).click();
@@ -39,7 +39,7 @@ test("US2 invalid intake shows errors and preserves entered values", async ({ pa
   await expect(page.getByText("Enter a starting point.")).toBeVisible();
 
   await page.getByLabel("Starting point").fill("St. Louis, MO");
-  await page.getByLabel("Florida destination").fill("Orlando, FL");
+  await page.getByLabel("Destination area").fill("Chicago, IL");
   await page.getByRole("button", { name: "Next", exact: true }).click();
   await page.getByLabel("Start date").fill("2026-07-12");
   await page.getByLabel("End date").fill("2026-07-01");

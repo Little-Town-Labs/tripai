@@ -32,16 +32,21 @@ export function SignUpForm() {
     }
 
     setPending(true);
-    const { error } = await authClient.signUp.email({
-      ...parsed.values,
-      callbackURL: "/app",
-    });
+    try {
+      const { error } = await authClient.signUp.email({
+        ...parsed.values,
+        callbackURL: "/app",
+      });
 
-    setPending(false);
-
-    if (error) {
+      if (error) {
+        setState({ error: getAuthErrorMessage("sign-up", error) });
+        return;
+      }
+    } catch (error) {
       setState({ error: getAuthErrorMessage("sign-up", error) });
       return;
+    } finally {
+      setPending(false);
     }
 
     router.push("/app");
