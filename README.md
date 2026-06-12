@@ -1,36 +1,124 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# TripAI
 
-## Getting Started
+TripAI is an AI-powered family road-trip planner built with Next.js 16, Neon Postgres/Auth, Drizzle, and Spec Kit driven development.
 
-First, run the development server:
+Product promise: families pay once for a trip, own it forever, revise it as plans change, and eventually turn it into a living scrapbook.
+
+## Current State
+
+Implemented roadmap features:
+
+- F1 Platform bootstrap: Next.js 16 app, Tailwind, Drizzle, CI, Neon docs.
+- F2 Data model and RLS: owner/share-link-aware schema and policy tests.
+- F3 Owner authentication: Neon Auth owner sign-up/sign-in and protected owner app.
+- F4 Intake wizard: authenticated responsive trip intake with owner-scoped persistence.
+- F5 Retrieval layer: Google Places/Routes wrappers, cache keys, fake-provider tests.
+- F6 AI generation pipeline: OpenRouter-backed provider contract, grounded planner, validator, narrator, progress events.
+- F7 Plan review: owner-only plan page, itinerary display, progress-ready state, pre-purchase revision requests, version browsing.
+- F8 Checkout and fulfillment: disabled-by-default Stripe checkout path, one-time Checkout session creation, raw-body webhook verification, webhook-only purchase fulfillment.
+- F9 Trip detail co-pilot: owner-only purchased trip view, active day/current-next stop context, persisted route overview, Google Maps/Waze handoffs, park official links.
+
+Next roadmap feature: F10 Scrapbook notes, ratings, and photos.
+
+## Important Boundaries
+
+- Stripe is implemented but disabled by default with `TRIPAI_STRIPE_ENABLED=0`.
+- Photo/object storage is deferred until F10.
+- Share-link family access exists in the data/RLS foundation but the user-facing sharing feature is F12.
+- Checkout success redirects do not mark trips purchased; only verified Stripe webhooks do.
+- Trip detail uses persisted route/place data and outbound navigation links; it does not implement turn-by-turn navigation, live map tiles, or live Disney data.
+- Automated provider tests use fakes. Live Google, OpenRouter, and Stripe calls are manual/credential-gated.
+
+## Local Setup
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Copy environment placeholders:
+
+```bash
+cp .env.example .env.local
+```
+
+Required local values depend on what you are running:
+
+- `DATABASE_URL`: Neon development database.
+- `DATABASE_TEST_URL`: Neon testing branch for DB-backed tests.
+- `NEON_AUTH_BASE_URL` and `NEON_AUTH_COOKIE_SECRET`: owner auth.
+- `OPENROUTER_API_KEY`: live AI generation smoke only.
+- `GOOGLE_MAPS_API_KEY`: live retrieval smoke only.
+- `TRIPAI_STRIPE_ENABLED=0`: default checkout-off state.
+
+Do not commit real `.env.local` values.
+
+## Development
+
+Start the dev server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open `http://localhost:3000`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Primary routes implemented so far:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `/auth/sign-up`
+- `/auth/sign-in`
+- `/app`
+- `/app/intake`
+- `/app/plan/[tripId]`
+- `/app/plan/[tripId]/checkout`
+- `/app/trips/[tripId]`
+- `/api/stripe/webhook`
 
-## Learn More
+## Validation
 
-To learn more about Next.js, take a look at the following resources:
+General checks:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npm run lint
+npm run typecheck
+npm run build
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Focused test commands:
 
-## Deploy on Vercel
+```bash
+npm run test:auth
+npm run test:db
+npm run test:intake
+npm run test:retrieval
+npm run test:generation
+npm run test:plan-review
+npm run test:checkout
+npm run test:trip-detail
+npm run test:e2e
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+DB-backed suites reset the Neon testing branch. Run DB/auth/feature DB suites sequentially when running locally.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Spec Kit Workflow
+
+The roadmap is `.specify/roadmap.md`. Feature artifacts live under `specs/NNN-feature-name/`.
+
+Standard flow for each substantial feature:
+
+1. Specify
+2. Plan
+3. Tasks
+4. Analyze
+5. Implement with tests first
+6. Validate
+7. Mark the roadmap only after validation passes
+8. Commit, push, open PR
+9. After merge, sync `main` and delete merged branches
+
+Before touching Next.js APIs, read the relevant Next 16 docs under `node_modules/next/dist/docs/`; this project intentionally treats Next 16 as different from older training assumptions.
+
+## CI
+
+GitHub Actions runs on the self-hosted `aegis-tripai-ci` runner. Jobs run in a Playwright container. Keep CI checks deterministic and avoid live provider credentials in default test paths.
