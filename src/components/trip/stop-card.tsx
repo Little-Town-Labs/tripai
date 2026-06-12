@@ -5,6 +5,7 @@ import type {
   StopRatingSummary,
 } from "@/lib/scrapbook/service";
 import type { TripDetailStop } from "@/lib/trip-detail/service";
+import { markStopVisitedAction } from "@/app/app/trips/[tripId]/actions";
 
 import { formatTime } from "./format";
 import { NoteForm } from "./note-form";
@@ -53,6 +54,16 @@ export function StopCard({
           {stop.checked ? "Checked" : "Upcoming"}
         </span>
       </div>
+      <form action={markStopVisitedAction.bind(null, tripId)} className="mt-3">
+        <input type="hidden" name="stopId" value={stop.id} />
+        <input type="hidden" name="checked" value={stop.checked ? "false" : "true"} />
+        <button
+          type="submit"
+          className="inline-flex min-h-11 items-center rounded-md border border-emerald-800 px-3 py-2 text-sm font-semibold text-emerald-900 transition hover:bg-emerald-50"
+        >
+          {stop.checked ? "Mark upcoming" : "Mark visited"}
+        </button>
+      </form>
 
       {stop.description ? <p className="mt-3 leading-7 text-stone-700">{stop.description}</p> : null}
       {stop.tips ? <p className="mt-2 text-sm leading-6 text-stone-700">{stop.tips}</p> : null}

@@ -139,6 +139,7 @@ Both are constitutional commitments and therefore non-negotiable for launch. The
 ### Phase 3 — Adapt & Share (MVP completion)
 
 #### F11: Post-purchase & mid-trip revisions
+**Status:** Done — implemented owner-only revision controls with two planning rounds, three mid-trip rounds, visited-stop marking, draft candidate/commit workflow, removed-stop scrapbook preservation blocking and preservation writes, previous-version restore, trip-detail UI integration, and DB-backed revision tests on 2026-06-12. The app action path uses a conservative verified-route candidate generator through the service seam; provider-backed replanning can replace that generator without changing quota/commit/preservation behavior.
 **Source:** Arch doc §AI Trip Generation Pipeline Step 6 (planning revisions), **Constitution Article V** (mid-trip revisions)
 **Description:** Two revision modes sharing the same backend:
 - **Planning revisions (post-purchase, pre-travel):** 2 free rounds. Same UX as F7 revisions.
@@ -349,7 +350,7 @@ F1 (Bootstrap)
 - [ ] Phase 2 gate: a user can buy a trip and interact with it as an owner
 
 ### Phase 3 — Adapt & Share (MVP completion)
-- [ ] **F11: Post-purchase & mid-trip revisions** — `/speckit-specify 11-revisions`
+- [x] **F11: Post-purchase & mid-trip revisions** — `specs/011-mid-trip-revisions`
 - [ ] **F12: Credential-free family sharing** — `/speckit-specify 12-family-sharing`
 - [ ] 🚀 **MVP launch gate:** all 12 features in production, security review passed
 

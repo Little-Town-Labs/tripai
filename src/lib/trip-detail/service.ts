@@ -5,6 +5,16 @@ import {
   listScrapbookForTrip,
   type ScrapbookSummary,
 } from "@/lib/scrapbook/service";
+import { findRemovedStopContributions } from "@/db/revisions";
+import {
+  MID_TRIP_REVISION_LIMIT,
+  PLANNING_REVISION_LIMIT,
+} from "@/lib/revisions/config";
+import type {
+  RemovedStopContributionSummary,
+  RevisionCandidateSummary,
+  RevisionPanel,
+} from "@/lib/revisions/service";
 
 import {
   buildNavigationLinks,
@@ -29,6 +39,7 @@ export type TripDetail = {
     status: string;
     purchasedAt: Date;
   };
+  revisionPanel: RevisionPanel;
   selectedRevision: TripDetailRevision | null;
   days: TripDetailDay[];
   activeDayId: string | null;
@@ -94,6 +105,8 @@ type TripRow = {
   status: string;
   currentRevisionId: string | null;
   purchasedAt: Date | null;
+  planningRevisionsUsed: number;
+  midTripRevisionsUsed: number;
 };
 
 type DayRow = Omit<TripDetailDay, "isActive" | "stops">;
@@ -136,6 +149,12 @@ export async function getTripDetail(
       : [];
     const shaped = shapeDays(rawDays, input.today ?? new Date());
     const scrapbook = await listScrapbookForTrip(client, trip.id);
+    const revisionPanel = await getTripRevisionPanel(
+      client,
+      trip,
+      rawDays,
+      input.today ?? new Date(),
+    );
 
     await client.query("commit");
 
@@ -149,6 +168,7 @@ export async function getTripDetail(
           status: trip.status,
           purchasedAt: trip.purchasedAt,
         },
+        revisionPanel,
         selectedRevision,
         days: shaped.days,
         activeDayId: shaped.activeDayId,
@@ -176,6 +196,8 @@ async function getVisibleTrip(client: PoolClient, tripId: string) {
         status,
         current_revision_id as "currentRevisionId",
         purchased_at as "purchasedAt"
+        , planning_revisions_used as "planningRevisionsUsed"
+        , mid_trip_revisions_used as "midTripRevisionsUsed"
       from trips
       where id = $1
         and deleted_at is null
@@ -185,6 +207,125 @@ async function getVisibleTrip(client: PoolClient, tripId: string) {
   );
 
   return rows[0] ?? null;
+}
+
+async function getTripRevisionPanel(
+  client: PoolClient,
+  trip: TripRow & { purchasedAt: Date },
+  rawDays: Array<DayRow & { stops: StopRow[] }>,
+  today: Date,
+): Promise<RevisionPanel> {
+  const previousRevision = await getPreviousRevision(client, trip.id);
+  const draftCandidate = await getLatestDraftCandidate(client, trip.id);
+  const range = tripDateRange(rawDays);
+  const todayDate = today.toISOString().slice(0, 10);
+  const planningRemaining = Math.max(0, PLANNING_REVISION_LIMIT - trip.planningRevisionsUsed);
+  const midTripRemaining = Math.max(0, MID_TRIP_REVISION_LIMIT - trip.midTripRevisionsUsed);
+
+  return {
+    tripId: trip.id,
+    planningRemaining,
+    midTripRemaining,
+    canRequestPlanning: Boolean(range && todayDate < range.start && planningRemaining > 0),
+    canRequestMidTrip: Boolean(range && todayDate >= range.start && todayDate <= range.end && midTripRemaining > 0),
+    currentRevisionId: trip.currentRevisionId,
+    previousRevision,
+    draftCandidate,
+  };
+}
+
+async function getPreviousRevision(client: PoolClient, tripId: string) {
+  const { rows } = await client.query<RevisionPanel["previousRevision"] & {}>(
+    `
+      select
+        id,
+        revision_number as "revisionNumber",
+        summary
+      from trip_revisions
+      where trip_id = $1
+        and status = 'superseded'
+      order by committed_at desc nulls last, revision_number desc
+      limit 1
+    `,
+    [tripId],
+  );
+  return rows[0] ?? null;
+}
+
+async function getLatestDraftCandidate(
+  client: PoolClient,
+  tripId: string,
+): Promise<RevisionCandidateSummary | null> {
+  const { rows } = await client.query<{
+    id: string;
+    revisionNumber: number;
+    kind: string;
+  }>(
+    `
+      select
+        id,
+        revision_number as "revisionNumber",
+        kind
+      from trip_revisions
+      where trip_id = $1
+        and status = 'draft'
+        and kind in ('post_purchase', 'mid_trip')
+      order by revision_number desc
+      limit 1
+    `,
+    [tripId],
+  );
+  const draft = rows[0] ?? null;
+  if (!draft) return null;
+
+  const { rows: keys } = await client.query<{ stableStopKey: string }>(
+    `
+      select stable_stop_key as "stableStopKey"
+      from stops
+      where trip_id = $1
+        and revision_id = $2
+    `,
+    [tripId, draft.id],
+  );
+  const removedStopContributions = summarizeRemovedContributions(
+    await findRemovedStopContributions(client, tripId, keys.map((row) => row.stableStopKey)),
+  );
+
+  return {
+    revisionId: draft.id,
+    revisionNumber: draft.revisionNumber,
+    mode: draft.kind === "mid_trip" ? "mid_trip" : "planning",
+    removedStopContributions,
+    canCommit: removedStopContributions.length === 0,
+  };
+}
+
+function summarizeRemovedContributions(contributions: Array<{
+  kind: "note" | "rating" | "photo";
+  id: string;
+  stopId: string;
+  stableStopKey: string;
+}>) {
+  const grouped = new Map<string, RemovedStopContributionSummary>();
+  for (const contribution of contributions) {
+    const current = grouped.get(contribution.stableStopKey) ?? {
+      stableStopKey: contribution.stableStopKey,
+      stopId: contribution.stopId,
+      counts: { notes: 0, ratings: 0, photos: 0 },
+    };
+    if (contribution.kind === "note") current.counts.notes += 1;
+    if (contribution.kind === "rating") current.counts.ratings += 1;
+    if (contribution.kind === "photo") current.counts.photos += 1;
+    grouped.set(contribution.stableStopKey, current);
+  }
+  return [...grouped.values()].sort((a, b) => a.stableStopKey.localeCompare(b.stableStopKey));
+}
+
+function tripDateRange(days: Array<Pick<TripDetailDay, "date">>) {
+  const dates = days.map((day) => day.date).sort();
+  const start = dates[0];
+  const end = dates[dates.length - 1];
+  return start && end ? { start, end } : null;
 }
 
 function isPurchasedTrip(trip: TripRow): trip is TripRow & { purchasedAt: Date } {
