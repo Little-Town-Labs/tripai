@@ -19,15 +19,16 @@ Implemented roadmap features:
 - F9 Trip detail co-pilot: owner-only purchased trip view, active day/current-next stop context, persisted route overview, Google Maps/Waze handoffs, park official links.
 - F10 Scrapbook notes and ratings: disabled-by-default owner scrapbook surface, durable trip/day/stop notes, stop ratings, photo-storage placeholder.
 - F11 Post-purchase and mid-trip revisions: owner revision counts, visited-stop marking, draft candidate controls, preservation-required commits for removed scrapbook content, previous-version restore.
+- F12 Credential-free family sharing: owner-created hash-only share links, `/share/[token]` account-free trip view, family notes/ratings with display names, immediate revocation, and owner moderation.
 
-Next roadmap feature: F12 Credential-free family sharing.
+Next roadmap feature: F13 Data export and deletion ops.
 
 ## Important Boundaries
 
 - Stripe is implemented but disabled by default with `TRIPAI_STRIPE_ENABLED=0`.
 - Scrapbook UI/actions are implemented but disabled by default with `TRIPAI_SCRAPBOOK_ENABLED=0`.
 - Photo/object upload storage remains deferred; F10 does not accept binary uploads or show fake uploaded state.
-- Share-link family access exists in the data/RLS foundation but the user-facing sharing feature is F12.
+- Family share links are opt-in, revocable, and store only token hashes. Raw share URLs are returned only when the owner creates a link.
 - F11 revision generation currently uses a conservative verified-route candidate seam in the app action path; provider-backed replanning can replace that generator without changing quota, commit, preservation, or restore rules.
 - Checkout success redirects do not mark trips purchased; only verified Stripe webhooks do.
 - Trip detail uses persisted route/place data and outbound navigation links; it does not implement turn-by-turn navigation, live map tiles, or live Disney data.
@@ -56,6 +57,7 @@ Required local values depend on what you are running:
 - `GOOGLE_MAPS_API_KEY`: live retrieval smoke only.
 - `TRIPAI_STRIPE_ENABLED=0`: default checkout-off state.
 - `TRIPAI_SCRAPBOOK_ENABLED=0`: default scrapbook-off state.
+- `TRIPAI_APP_BASE_URL`: optional absolute base URL for newly created family share links; without it, created links are returned as `/share/{token}`.
 
 Do not commit real `.env.local` values.
 
@@ -78,6 +80,7 @@ Primary routes implemented so far:
 - `/app/plan/[tripId]`
 - `/app/plan/[tripId]/checkout`
 - `/app/trips/[tripId]`
+- `/share/[token]`
 - `/api/stripe/webhook`
 
 ## Validation
@@ -103,6 +106,7 @@ npm run test:checkout
 npm run test:trip-detail
 npm run test:scrapbook
 npm run test:revisions
+npm run test:sharing
 npm run test:e2e
 ```
 

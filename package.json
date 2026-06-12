@@ -17,6 +17,7 @@
     "test:trip-detail": "tsx --test --test-concurrency=1 tests/trip-detail/**/*.test.ts",
     "test:scrapbook": "tsx --test --test-concurrency=1 tests/scrapbook/**/*.test.ts",
     "test:revisions": "tsx --test --test-concurrency=1 tests/revisions/**/*.test.ts",
+    "test:sharing": "tsx --test --test-concurrency=1 tests/sharing/**/*.test.ts",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",

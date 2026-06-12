@@ -5,7 +5,10 @@ import type {
   StopRatingSummary,
 } from "@/lib/scrapbook/service";
 import type { TripDetailStop } from "@/lib/trip-detail/service";
-import { markStopVisitedAction } from "@/app/app/trips/[tripId]/actions";
+import {
+  markStopVisitedAction,
+  removeShareContributionAction,
+} from "@/app/app/trips/[tripId]/actions";
 
 import { formatTime } from "./format";
 import { NoteForm } from "./note-form";
@@ -110,13 +113,30 @@ export function StopCard({
       {scrapbookEnabled ? (
         <section className="mt-4 border-t border-stone-200 pt-4">
           <h4 className="text-base font-semibold text-stone-950">Stop scrapbook</h4>
-          <NoteList title="Stop notes" notes={notes} />
+          <NoteList title="Stop notes" notes={notes} tripId={tripId} />
           {ratings.length > 0 ? (
             <ol className="mt-3 space-y-2">
               {ratings.map((rating) => (
                 <li key={rating.id} className="rounded-md border border-stone-200 bg-white p-3">
                   <p className="text-sm font-semibold text-stone-900">{rating.stars} / 5 stars</p>
                   {rating.text ? <p className="mt-1 text-sm leading-6 text-stone-700">{rating.text}</p> : null}
+                  {rating.authorDisplayName ? (
+                    <p className="mt-2 text-xs font-semibold uppercase tracking-[0.12em] text-stone-500">
+                      {rating.authorDisplayName}
+                    </p>
+                  ) : null}
+                  {rating.authorShareLinkId ? (
+                    <form action={removeShareContributionAction.bind(null, tripId)} className="mt-3">
+                      <input type="hidden" name="contributionType" value="rating" />
+                      <input type="hidden" name="contributionId" value={rating.id} />
+                      <button
+                        type="submit"
+                        className="inline-flex min-h-10 items-center rounded-md border border-red-700 px-3 py-2 text-sm font-semibold text-red-700 transition hover:bg-red-50"
+                      >
+                        Remove
+                      </button>
+                    </form>
+                  ) : null}
                 </li>
               ))}
             </ol>

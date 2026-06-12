@@ -20,6 +20,12 @@ import {
   restorePreviousRevision,
   type RevisionGenerator,
 } from "@/lib/revisions/service";
+import {
+  createShareLink,
+  removeContribution,
+  revokeShareLink,
+} from "@/lib/sharing/service";
+import type { ShareLinkFieldErrors } from "@/lib/sharing/validation";
 
 export type NoteActionState = {
   status?: "success" | "error";
@@ -37,6 +43,13 @@ export type RevisionActionState = {
   status?: "success" | "error";
   message?: string;
   fieldErrors?: { requestText?: string; mode?: string; preservation?: string };
+};
+
+export type ShareLinkActionState = {
+  status?: "success" | "error";
+  message?: string;
+  fieldErrors?: ShareLinkFieldErrors;
+  createdUrl?: string;
 };
 
 let appPool: ReturnType<typeof createPool> | undefined;
@@ -156,6 +169,88 @@ export async function createStopRatingAction(
       status: "error",
       message: "We could not save that rating right now.",
     };
+  }
+}
+
+export async function createShareLinkAction(
+  tripId: string,
+  _prevState: ShareLinkActionState,
+  formData: FormData,
+): Promise<ShareLinkActionState> {
+  try {
+    const owner = await requireCurrentOwner();
+    const result = await createShareLink(getAppPool(), owner.id, {
+      tripId,
+      label: formData.get("label"),
+      appBaseUrl: process.env.TRIPAI_APP_BASE_URL,
+    });
+
+    if (result.ok) {
+      revalidatePath(`/app/trips/${tripId}`);
+      return {
+        status: "success",
+        message: "Share link created. Copy it now; it will not be shown again.",
+        createdUrl: result.link.url,
+      };
+    }
+
+    if (result.reason === "invalid") {
+      return {
+        status: "error",
+        message: "Check the share label before creating the link.",
+        fieldErrors: result.fieldErrors,
+      };
+    }
+
+    return {
+      status: "error",
+      message: result.reason === "not_purchased"
+        ? "Family sharing unlocks after purchase."
+        : "We could not find that trip for your account.",
+    };
+  } catch {
+    return {
+      status: "error",
+      message: "We could not create that share link right now.",
+    };
+  }
+}
+
+export async function revokeShareLinkAction(
+  tripId: string,
+  formData: FormData,
+) {
+  try {
+    const owner = await requireCurrentOwner();
+    await revokeShareLink(getAppPool(), owner.id, {
+      tripId,
+      shareLinkId: String(formData.get("shareLinkId") ?? ""),
+    });
+    revalidatePath(`/app/trips/${tripId}`);
+  } catch {
+    return;
+  }
+}
+
+export async function removeShareContributionAction(
+  tripId: string,
+  formData: FormData,
+) {
+  const contributionType = String(formData.get("contributionType"));
+  if (contributionType !== "note" && contributionType !== "rating") {
+    return;
+  }
+
+  try {
+    const owner = await requireCurrentOwner();
+    await removeContribution(getAppPool(), owner.id, {
+      tripId,
+      contributionType,
+      contributionId: String(formData.get("contributionId") ?? ""),
+    });
+    revalidatePath(`/app/trips/${tripId}`);
+  } catch {
+    return;
   }
 }
 
